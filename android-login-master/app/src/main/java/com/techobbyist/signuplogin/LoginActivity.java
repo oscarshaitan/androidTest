@@ -50,13 +50,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void login(){
         String email = etEmail.getText().toString();
         String pass = etPass.getText().toString();
-
-        if(db.getUser(email,pass)==1){
+        String token = ""+db.getUser(email,pass);
+        System.out.println(token);
+        if(token.equals("1")){
             //admin login
             session.setLoggedin(true);
             startActivity(new Intent(LoginActivity.this, Admin.class));
             finish();
-        if(db.getUser(email,pass)==2){
+        if(token.equals("2")){
             //operator login
             session.setLoggedin(true);
             startActivity(new Intent(LoginActivity.this, MainActivity.class));

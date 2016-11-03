@@ -58,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        System.out.println(rol);
+
         values.put(COLUMN_ROL, rol);
         values.put(COLUMN_EMAIL, email);
         values.put(COLUMN_PASS, password);
@@ -70,7 +70,7 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d(TAG, "user inserted" + id);
     }
 
-    public int getUser(String email, String pass){
+    public boolean getUser(String email, String pass){
         //HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "select * from  " + USER_TABLE + " where " +
                 COLUMN_EMAIL + " = " + "'"+email+"'" + " and " + COLUMN_PASS + " = " + "'"+pass+"'";
@@ -81,13 +81,11 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
-            //rol= cursor.getInt(3);
-            rol = 1;
-            return rol;
+            return true;
         }
         cursor.close();
         db.close();
 
-        return rol;
+        return false;
     }
 }
