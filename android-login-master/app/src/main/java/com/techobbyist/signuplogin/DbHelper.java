@@ -70,7 +70,7 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d(TAG, "user inserted" + id);
     }
 
-    public boolean getUser(String email, String pass){
+    public int getUser(String email, String pass){
         //HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "select * from  " + USER_TABLE + " where " +
                 COLUMN_EMAIL + " = " + "'"+email+"'" + " and " + COLUMN_PASS + " = " + "'"+pass+"'";
@@ -81,11 +81,12 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
-            return true;
+            rol  = cursor.getInt(1);
+            return rol;
         }
         cursor.close();
         db.close();
 
-        return false;
+        return rol;
     }
 }

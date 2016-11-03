@@ -52,18 +52,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String pass = etPass.getText().toString();
         String token = ""+db.getUser(email,pass);
         System.out.println(token);
-        if(token.equals("1")){
+        if(token.equals("1")) {
             //admin login
             session.setLoggedin(true);
             startActivity(new Intent(LoginActivity.this, Admin.class));
             finish();
+        }
         if(token.equals("2")){
             //operator login
             session.setLoggedin(true);
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
-        }else{
+        else{
             Toast.makeText(getApplicationContext(), "Wrong email/password",Toast.LENGTH_SHORT).show();
         }
     }

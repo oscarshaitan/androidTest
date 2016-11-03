@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">IOTAPP</string>
+
+    <string name="mensaje_error">Ha ocurrido un error y el aplicativo se cerrara, el informe de error sera enviado automaticamente</string>
+    <string name="crash_dialog_comment_prompt">por favor ingrese su nombre de usuario y presione la tecla ACEPTAR</string>
+    <string name="crash_dialog_ok_toast">Error reportado, muchas gracias!</string>
+
+    <string name="fcm_registered">Notificación Recibida: Seleccione categoria de interes.. </string>
+    <string name="gcm_unregistered">De GCM: Dispositivo eliminado del registro!</string>
+    <string name="gcm_message">De GCM: Tienes un mensaje!</string>
+    <string name="gcm_error">De GCM: error (%1$s).</string>
+    <string name="gcm_recoverable_error">De GCM: recoverable error (%1$s).</string>
+    <string name="gcm_deleted">De GCM: servidor borrado %1$d mensajes pendientes!</string>
+    <string name="server_registering">Tratando (intento %1$d/%2$d) de registrar el dispositivo en el servidor.</string>
+    <string name="server_registered"> De Servidor de prueba: Dispositivo añadido exitosamente!</string>
+    <string name="server_unregistered"> De Servidor de prueba: Dispositivo desvinculado exitosamente!</string>
+    <string name="server_register_error">No se pudo registrar el dispositivo en el servidor despues de %1$d intentos.</string>
+    <string name="server_unregister_error">No se pudo registrar el dispositivo en el servidor (%1$s).</string>
+    <string name="msg_token_fmt" translatable="false"> El dispositivo a ingresado adecuadamente </string>
+    <string name="error_login" translatable="false">Login: Los datos Ingresado estan errados, verifique su suario y contraseña </string>
+    <string name="error_token_fmt" translatable="false">InstanceID Token: Ha ocurrido un error en el registro, intente de nuevo</string>
+</resources>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Register">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/aNombrer"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColorHint="#1f518b"
+        android:hint="Nombre" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Sistema de Registro"
+        android:id="@+id/text2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical|center_horizontal" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/aUsuarior"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColorHint="#1f518b"
+        android:hint="Usuario"
+        android:layout_below="@+id/aNombrer"
+        android:layout_alignLeft="@+id/aNombrer"
+        android:layout_alignStart="@+id/aNombrer" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/aEdadr"
+        android:layout_below="@+id/aUsuarior"
+        android:layout_alignLeft="@+id/aUsuarior"
+        android:layout_alignStart="@+id/aUsuarior"
+        android:textColorHint="#1f518b"
+        android:gravity="center_vertical|center_horizontal"
+        android:hint="Edad" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:id="@+id/aRegistrar"
+        android:layout_marginTop="43dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/aPasswd" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/aIncompleto"
+        android:layout_below="@+id/aRegistrar"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:gravity="center_vertical|clip_horizontal|clip_vertical|center_horizontal"
+        android:visibility="visible" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/aPasswd"
+        android:textColorHint="#1f518b"
+        android:hint="Contraseña"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_below="@+id/aEdadr"
+        android:layout_alignLeft="@+id/aEdadr"
+        android:layout_alignStart="@+id/aEdadr" />
+
+</RelativeLayout>
