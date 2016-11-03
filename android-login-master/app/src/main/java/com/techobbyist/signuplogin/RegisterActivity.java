@@ -48,14 +48,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = etEmail.getText().toString();
         String pass = etPass.getText().toString();
         String rol = Rol.getText().toString();
-        if(email.isEmpty() && pass.isEmpty() && rol.isEmpty() ){
+        if(email.isEmpty() && pass.isEmpty()){
             displayToast("Username/password/Rol field empty");
         }else{//rol,
-            db.addUser(email,pass,rol);
+            db.addUser(email,pass, rol);
             displayToast("User registered");
             finish();
         }
     }
+
 
     private void displayToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

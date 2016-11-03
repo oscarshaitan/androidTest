@@ -54,10 +54,11 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser(String email, String password,String rol) {
+    public void addUser(String email, String password, String rol) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        System.out.println(rol);
         values.put(COLUMN_ROL, rol);
         values.put(COLUMN_EMAIL, email);
         values.put(COLUMN_PASS, password);
@@ -80,7 +81,8 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
-            rol= cursor.getInt(3);
+            //rol= cursor.getInt(3);
+            rol = 1;
             return rol;
         }
         cursor.close();
