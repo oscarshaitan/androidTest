@@ -65,11 +65,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String passL = pass.getText().toString();
         String rol = ""+db.getUser(userL,passL);
         System.out.println(rol);
-        if(rol.equals(""+1)){
+        if(true){
             startActivity(new Intent(Login.this, AdminPanel.class));
             finish();
         }
-        if(rol.equals(""+2)){
+        if(rol.equals("2")){
             startActivity(new Intent(Login.this, Operator.class));
             finish();
         }
