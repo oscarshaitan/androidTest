@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BoxOpen</string>
+    <string name="user">User</string>
+    <string name="pasword">Pasword</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="registerTitle">Register</string>
+    <string name="back">Back</string>
+    <string name="add">add</string>
+    <string name="name">Name</string>
+    <string name="passR">Pass</string>
+    <string name="rol">Rol</string>
+    <string name="logout">Logout</string>
+</resources>
