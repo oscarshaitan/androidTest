@@ -13,8 +13,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,9 +48,9 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/nameText"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="39dp"
             android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true" />
+            android:layout_toEndOf="@+id/textView4" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -76,8 +76,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="User"
             android:id="@+id/textView2"
-            android:layout_alignTop="@+id/nameText"
-            android:layout_toEndOf="@+id/buttonB" />
+            android:layout_alignBottom="@+id/nameText"
+            android:layout_alignStart="@+id/textView3" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -85,8 +85,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Pass"
             android:id="@+id/textView3"
-            android:layout_alignTop="@+id/passRText"
-            android:layout_toEndOf="@+id/buttonB" />
+            android:layout_alignBottom="@+id/passRText"
+            android:layout_alignEnd="@+id/buttonB" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Rol 1/2"
             android:id="@+id/textView4"
-            android:layout_alignTop="@+id/rolText"
+            android:layout_alignBottom="@+id/rolText"
             android:layout_alignStart="@+id/textView3" />
 
     </RelativeLayout>

@@ -36,7 +36,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         if(session.loggedin()){
             session.setLoggedin(true);
-            startActivity(new Intent(Login.this,AdminPanel.class ));
+            startActivity(new Intent(Login.this,AdminMapsActivity.class ));
             finish();
         }
     }
@@ -65,11 +65,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String passL = pass.getText().toString();
         String rol = ""+db.getUser(userL,passL);
         System.out.println(rol);
-        if(true){
-            startActivity(new Intent(Login.this, AdminPanel.class));
+        if(rol.equals("1")){
+            session.setLoggedin(true);
+            startActivity(new Intent(Login.this, AdminMapsActivity.class));
             finish();
         }
-        if(rol.equals("2")){
+        else if(rol.equals("2")){
             startActivity(new Intent(Login.this, Operator.class));
             finish();
         }

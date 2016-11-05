@@ -12,4 +12,6 @@
     <string name="passR">Pass</string>
     <string name="rol">Rol</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_admin_map_panel">Map</string>
+    <string name="title_activity_admin_maps">Map</string>
 </resources>
