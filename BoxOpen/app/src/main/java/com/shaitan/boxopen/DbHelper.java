@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -77,7 +78,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Log.d(TAG, "user inserted "+id);
     }
 
-    public void addStop(double longit, double lat){
+    public long addStop(double lat, double longit ){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -87,7 +88,7 @@ public class DbHelper extends SQLiteOpenHelper{
         long id = db.insert(STOP_TABLE, null, values);
         db.close();
 
-        Log.d(TAG, "stop inserted "+id);
+        return id;
 
     }
 
@@ -106,6 +107,33 @@ public class DbHelper extends SQLiteOpenHelper{
         }
         else
         return 0;
+    }
+
+    public List<Double[]> getAllStops() {
+        String selectQuery = "select * from " +STOP_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //cursor.moveToFirst();
+        List<Double[]> stopList = new ArrayList<>();
+
+        while(cursor.moveToNext()){
+            Double[] stopData= new Double[3];
+            System.out.println("db");
+            stopData[0]= Double.valueOf(cursor.getString(0));
+            System.out.println( stopData[0]);
+            stopData[1]= Double.valueOf(cursor.getString(1));
+            stopData[2]= Double.valueOf(cursor.getString(2));
+            stopList.add(stopData);
+        }
+        return stopList;
+    }
+    public void CLEARSTOPS(){
+        String Query = "delete from "+STOP_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL(Query);
+    }
+    public void deletStop(){
+
     }
 
 

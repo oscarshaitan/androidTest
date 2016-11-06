@@ -1,6 +1,8 @@
 package com.shaitan.boxopen;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,7 +35,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         pass = (EditText)findViewById(R.id.passText);
         login.setOnClickListener(this);
         register.setOnClickListener(this);
-
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+        }
         if(session.loggedin()){
             session.setLoggedin(true);
             startActivity(new Intent(Login.this,AdminMapsActivity.class ));
@@ -64,14 +71,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String userL = user.getText().toString();
         String passL = pass.getText().toString();
         String rol = ""+db.getUser(userL,passL);
-        System.out.println(rol);
         if(rol.equals("1")){
             session.setLoggedin(true);
             startActivity(new Intent(Login.this, AdminMapsActivity.class));
             finish();
         }
         else if(rol.equals("2")){
-            startActivity(new Intent(Login.this, Operator.class));
+            session.setLoggedin(true);
+            startActivity(new Intent(Login.this, OperatorMapsActivity.class));
             finish();
         }
         else{

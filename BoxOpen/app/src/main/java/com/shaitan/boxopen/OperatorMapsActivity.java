@@ -1,44 +1,43 @@
 package com.shaitan.boxopen;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.graphics.Camera;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener  {
+public class OperatorMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+
 
     private GoogleMap googleMap;
     private GoogleMap mMap = googleMap;
-    private Button btnLogout, btnF5, btnC;
+    private Button btnLogoutO, btnF5O;
     private Session session;
+    private Camera camera;
+    CameraPosition cameraPosition;
 
-    private  DbHelper db;
-
-
+    private DbHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         db = new DbHelper(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_maps);
-
+        setContentView(R.layout.activity_operator_maps);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -46,22 +45,18 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
         if(!session.loggedin()){
             logout();
         }
-        btnC = (Button)findViewById(R.id.button);
-        btnC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearStops();
-            }
-        });
-        btnF5 = (Button)findViewById(R.id.F5Stops);
-        btnF5.setOnClickListener(new View.OnClickListener() {
+
+
+
+        btnF5O = (Button) findViewById(R.id.F5StopsO);
+        btnF5O.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getAllStops();
             }
         });
-        btnLogout = (Button)findViewById(R.id.btnLogout2);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnLogoutO = (Button) findViewById(R.id.btnLogoutO);
+        btnLogoutO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logout();
@@ -73,30 +68,33 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
         }
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
         mMap.setOnMapLongClickListener(this);
+        mMap.setBuildingsEnabled(true);
+        /*CameraPosition cameraPosition =
+                new CameraPosition.Builder()
+                        .target(new LatLng(0,0))
+                        .bearing(0)
+                        .tilt(23)
+                        .zoom(googleMap.getCameraPosition().zoom)
+                        .build();
+        camera = new Camera();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
         getAllStops();
+
     }
 
     private void logout(){
         session.setLoggedin(false);
         finish();
-        startActivity(new Intent(AdminMapsActivity.this,Login.class));
-    }
-
-    @Override
-    public void onMapLongClick(LatLng point) {
-        System.out.println(point.latitude);
-        System.out.println(point.longitude);
-        long stopId = db.addStop(point.latitude,point.longitude);
-        addMarker(stopId,point.latitude,point.longitude);
+        startActivity(new Intent(OperatorMapsActivity.this,Login.class));
     }
 
     private void getAllStops() {
@@ -106,22 +104,12 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
             mMap.addMarker(new MarkerOptions()
                     .title("Stop #"+stopList.get(i)[0])
                     .position(new LatLng(stopList.get(i)[2],stopList.get(i)[1] )));
-            //addMarker(stopList.get(i)[0],stopList.get(i)[1],stopList.get(i)[2]);
+
         }
-        //db.CLEARSTOPS();
-    }
-    private void addMarker(double id, double lat, double longt){
-        System.out.println("addMarker");
-        System.out.println(id);
-        System.out.println(lat);
-        System.out.println(longt);
-        LatLng POS = new LatLng(lat,longt);
-                mMap.addMarker(new MarkerOptions()
-                        .title("Stop #"+id)
-                        .position(new LatLng(lat,longt )));
-    }
-    private void clearStops(){
-        db.CLEARSTOPS();
     }
 
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+
+    }
 }

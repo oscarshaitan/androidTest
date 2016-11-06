@@ -9,41 +9,35 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.shaitan.boxopen.Operator">
 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/map"
-    tools:context="com.shaitan.boxopen.AdminMapsActivity"
-    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.shaitan.boxopen.OperatorMapsActivity" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:id="@+id/btnLogout2"
+        android:id="@+id/btnLogoutO"
         android:minHeight="0dp"
         android:minWidth="0dp"
-        android:layout_above="@+id/button"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/F5StopsO" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="F5 Stops"
-        android:id="@+id/F5Stops"
+        android:id="@+id/F5StopsO"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/map" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CLEAR STOPS"
-        android:id="@+id/button"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:layout_alignTop="@+id/F5Stops"
-        android:layout_alignParentStart="true" />
 </RelativeLayout>

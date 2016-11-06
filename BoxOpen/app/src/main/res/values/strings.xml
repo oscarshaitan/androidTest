@@ -14,4 +14,6 @@
     <string name="logout">Logout</string>
     <string name="title_activity_admin_map_panel">Map</string>
     <string name="title_activity_admin_maps">Map</string>
+    <string name="tap_instructions">tap_instructions</string>
+    <string name="title_activity_operator_maps">OperatorMap</string>
 </resources>
