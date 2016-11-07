@@ -1,18 +1,13 @@
 package com.shaitan.boxopen;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -31,8 +26,6 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
     private Session session;
 
     private  DbHelper db;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +87,6 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     public void onMapLongClick(LatLng point) {
-        System.out.println(point.latitude);
-        System.out.println(point.longitude);
         long stopId = db.addStop(point.latitude,point.longitude);
         addMarker(stopId,point.latitude,point.longitude);
     }
@@ -107,22 +98,18 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
             mMap.addMarker(new MarkerOptions()
                     .title("Stop #"+stopList.get(i)[0])
                     .position(new LatLng(stopList.get(i)[2],stopList.get(i)[1] )));
-            //addMarker(stopList.get(i)[0],stopList.get(i)[1],stopList.get(i)[2]);
         }
-        //db.CLEARSTOPS();
     }
     private void addMarker(double id, double lat, double longt){
-        System.out.println("addMarker");
-        System.out.println(id);
-        System.out.println(lat);
-        System.out.println(longt);
         LatLng POS = new LatLng(lat,longt);
                 mMap.addMarker(new MarkerOptions()
                         .title("Stop #"+id)
                         .position(new LatLng(lat,longt )));
     }
     private void clearStops(){
+
         db.CLEARSTOPS();
+        mMap.clear();
     }
 
 }

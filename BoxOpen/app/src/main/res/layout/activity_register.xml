@@ -48,8 +48,9 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/nameText"
-            android:layout_marginTop="39dp"
+            android:layout_marginTop="31dp"
             android:layout_below="@+id/textView"
+            android:layout_alignParentEnd="true"
             android:layout_toEndOf="@+id/textView4" />
 
         <EditText
@@ -59,7 +60,8 @@
             android:ems="10"
             android:id="@+id/passRText"
             android:layout_below="@+id/nameText"
-            android:layout_alignStart="@+id/nameText" />
+            android:layout_alignStart="@+id/nameText"
+            android:layout_alignParentEnd="true" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -68,7 +70,8 @@
             android:ems="10"
             android:id="@+id/rolText"
             android:layout_below="@+id/passRText"
-            android:layout_alignStart="@+id/passRText" />
+            android:layout_alignStart="@+id/passRText"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,8 +79,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="User"
             android:id="@+id/textView2"
-            android:layout_alignBottom="@+id/nameText"
-            android:layout_alignStart="@+id/textView3" />
+            android:layout_above="@+id/passRText"
+            android:layout_alignEnd="@+id/textView3" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,7 @@ import java.util.List;
  * Created by Shaitan on 3/11/2016.
  */
 public class DbHelper extends SQLiteOpenHelper{
+
     public static  final String TAG = DbHelper.class.getSimpleName();
     public static  final String DB_NAME = "OpenBox.db";
     public static  final int DB_VERSION = 1;
@@ -33,7 +32,7 @@ public class DbHelper extends SQLiteOpenHelper{
     public static  final String COLUMN_STOP_ID = "_id";
     public static  final String COLUMN_LONGITUD = "longitud";
     public static  final String COLUMN_LAT = "lat";
-    private crypth crypth;
+    private crypth crypthTool = new crypth();
 
 
     public static  final String CREATE_TABLE_USERS = "CREATE TABLE " +USER_TABLE+ "("
@@ -69,7 +68,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER, user);
-        values.put(COLUMN_PASS,pass);
+        values.put(COLUMN_PASS,crypthTool.SHA1(crypthTool.MD5(pass)));
         values.put(COLUMN_ROL, rol);
 
         long id = db.insert(USER_TABLE, null, values);
@@ -94,7 +93,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
     public int getUser(String user, String pass) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String selectQuery = "select * from " +USER_TABLE+ " where "+
-                COLUMN_USER + " = " + "'"+user+"'"+ " and " + COLUMN_PASS + " = " +"'"+pass+"'";
+                COLUMN_USER + " = " + "'"+user+"'"+ " and " + COLUMN_PASS + " = " +"'"+crypthTool.SHA1(crypthTool.MD5(pass))+"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -124,15 +123,10 @@ public class DbHelper extends SQLiteOpenHelper{
         }
         return stopList;
     }
+
     public void CLEARSTOPS(){
         String Query = "delete from "+STOP_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(Query);
     }
-    public void deleteStop(){
-    //para eleiminar un stop por su id no yet
-    }
-
-
-
 }

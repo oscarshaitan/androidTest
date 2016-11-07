@@ -1,15 +1,9 @@
 package com.shaitan.boxopen;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -40,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
 import com.google.android.gms.location.LocationServices;
 
-import java.text.DecimalFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,18 +46,12 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
     private Button btnLogoutO, btnF5O;
     private ImageButton BoxBtn;
     private Session session;
-    private Camera camera;
     private String provider;
-    CameraPosition cameraPosition;
-    Location location;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private static final String TAG = "OperatorMapsActivity";
     LocationManager LM;
     Circle circle;
-    //private SensorManager mSensorManager;
-    //private Sensor mSensor;
-
 
     private DbHelper db;
 
@@ -113,18 +101,13 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        /*Runnable R = new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        };*/
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void openBox() {
         BoxBtn.setImageDrawable(getDrawable(getResources().getIdentifier("box_open", "mipmap", getPackageName())));
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -138,6 +121,7 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
         }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setTiltGesturesEnabled(false);
         mMap.setOnMapLongClickListener(this);
         mMap.setBuildingsEnabled(true);
 
@@ -152,7 +136,6 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
                     || (temLocation != null && location.getTime() < temLocation
                     .getTime()))
                 location = temLocation;
-            provider = providerT;
         }
 
         CameraPosition cameraPosition =
@@ -163,8 +146,6 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
                         .zoom(20)
                         .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        //onLocationChanged(location);
-
     }
 
     private void logout() {
@@ -196,12 +177,17 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
 
     @Override
     public void onLocationChanged(Location location) {
+
         checkDistances(location);
     }
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void checkDistances(Location location) {
+        BoxBtn.setClickable(false);
+        BoxBtn.setEnabled(false);
+        BoxBtn.setElevation(0);
+        BoxBtn.setImageDrawable(getDrawable(getResources().getIdentifier("box_close_off","mipmap", getPackageName())));
         //da la distancia en Mts
         System.out.println("CALCULATING TEST DISTANCE");
         location.getLatitude();
@@ -214,19 +200,15 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
             LatLng markerPos = new LatLng(stopList.get(i)[2], stopList.get(i)[1]);
             distance = SphericalUtil.computeDistanceBetween(mPos, markerPos);
 
+            //si una de los stops esta a menos de 15mts se activa la caja
             if (distance <= 15) {
                 BoxBtn.setClickable(true);
                 BoxBtn.setEnabled(true);
                 BoxBtn.setElevation((float) 10.0);
                 BoxBtn.setImageDrawable(getDrawable(getResources().getIdentifier("box_close","mipmap", getPackageName())));
+            }
 
-            }
-            if (distance > 15) {
-                BoxBtn.setClickable(false);
-                BoxBtn.setEnabled(false);
-                BoxBtn.setElevation(0);
-                BoxBtn.setImageDrawable(getDrawable(getResources().getIdentifier("box_close_off","mipmap", getPackageName())));
-            }
+
         }
     }
 
@@ -253,8 +235,8 @@ public class OperatorMapsActivity extends FragmentActivity implements OnMapReady
         }
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setInterval(700);
+        mLocationRequest.setFastestInterval(350);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
