@@ -113,14 +113,11 @@ public class DbHelper extends SQLiteOpenHelper{
         String selectQuery = "select * from " +STOP_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        //cursor.moveToFirst();
         List<Double[]> stopList = new ArrayList<>();
 
         while(cursor.moveToNext()){
             Double[] stopData= new Double[3];
-            System.out.println("db");
             stopData[0]= Double.valueOf(cursor.getString(0));
-            System.out.println( stopData[0]);
             stopData[1]= Double.valueOf(cursor.getString(1));
             stopData[2]= Double.valueOf(cursor.getString(2));
             stopList.add(stopData);
@@ -132,10 +129,9 @@ public class DbHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(Query);
     }
-    public void deletStop(){
-
+    public void deleteStop(){
+    //para eleiminar un stop por su id no yet
     }
-
 
 
 

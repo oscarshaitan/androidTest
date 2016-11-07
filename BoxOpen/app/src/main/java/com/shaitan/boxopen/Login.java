@@ -41,11 +41,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
         }
-        if(session.loggedin()){
-            session.setLoggedin(true);
-            startActivity(new Intent(Login.this,AdminMapsActivity.class ));
-            finish();
-        }
+        session.setLoggedin(false);
     }
 
     @Override

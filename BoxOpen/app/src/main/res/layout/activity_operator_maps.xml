@@ -28,7 +28,7 @@
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/F5StopsO" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -39,5 +39,15 @@
         android:minWidth="0dp"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/map" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/BoxBtn"
+        android:src="@mipmap/box_close"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
