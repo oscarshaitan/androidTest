@@ -1,8 +1,11 @@
 package com.shaitan.boxopen;
 
 import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.shaitan.boxopen.AESCrypt;
+
 
 /**
  * Created by Shaitan on 3/11/2016.
@@ -43,4 +46,18 @@ public class crypth {
         byte[] sha1hash = md.digest();
         return convertToHex(sha1hash);
     }
+
+    public String AES_Encrypt(String KEY, String message) throws GeneralSecurityException {
+        String messageEncrypted = AESCrypt.encrypt(KEY, message);
+        return messageEncrypted;
+    }
+    public String AES_Decrypt(String KEY, String message) throws GeneralSecurityException {
+        String messageDecrypted = AESCrypt.decrypt(KEY, message);
+        return messageDecrypted;
+    }
+
+
+
+
+
 }

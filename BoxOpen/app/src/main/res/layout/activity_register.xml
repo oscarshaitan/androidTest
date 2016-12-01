@@ -7,23 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/colorPrimary"
     tools:context="com.shaitan.boxopen.Register">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/registerTitle"
-            android:id="@+id/textView"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:background="#ffffff">
 
         <Button
             android:layout_width="wrap_content"
@@ -31,16 +22,20 @@
             android:text="@string/back"
             android:id="@+id/buttonB"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:background="#f9f3a0"
+            android:textColor="@color/abc_primary_text_disable_only_material_light" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add"
+            android:text="@string/registerTitle"
             android:id="@+id/buttonA"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="false"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:background="#f9f3a0"
+            android:textColor="@color/abc_primary_text_disable_only_material_light" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -48,10 +43,16 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/nameText"
-            android:layout_marginTop="31dp"
-            android:layout_below="@+id/textView"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/textView4" />
+            android:layout_marginTop="33dp"
+            android:hint="Usuario"
+            android:textAlignment="center"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -59,9 +60,16 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/passRText"
+            android:hint="Contraseña"
+            android:textAlignment="center"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
             android:layout_below="@+id/nameText"
-            android:layout_alignStart="@+id/nameText"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignStart="@+id/nameText" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -69,36 +77,16 @@
             android:inputType="number"
             android:ems="10"
             android:id="@+id/rolText"
+            android:textAlignment="center"
+            android:hint="Rol 1: Adim 2: Operador"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
             android:layout_below="@+id/passRText"
-            android:layout_alignStart="@+id/passRText"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="User"
-            android:id="@+id/textView2"
-            android:layout_above="@+id/passRText"
-            android:layout_alignEnd="@+id/textView3" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Pass"
-            android:id="@+id/textView3"
-            android:layout_alignBottom="@+id/passRText"
-            android:layout_alignEnd="@+id/buttonB" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Rol 1/2"
-            android:id="@+id/textView4"
-            android:layout_alignBottom="@+id/rolText"
-            android:layout_alignStart="@+id/textView3" />
+            android:layout_alignStart="@+id/passRText" />
 
     </RelativeLayout>
 </RelativeLayout>
