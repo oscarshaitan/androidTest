@@ -3,7 +3,7 @@
     package="com.shaitan.boxopen">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Register" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -27,10 +26,16 @@
 
         <activity
             android:name=".AdminMapsActivity"
-            android:label="@string/title_activity_admin_maps"></activity>
+            android:label="@string/title_activity_admin_maps" />
         <activity
             android:name=".OperatorMapsActivity"
-            android:label="@string/title_activity_operator_maps"></activity>
+            android:label="@string/title_activity_operator_maps" />
+        <activity android:name=".AdminBoxList" />
+        <activity android:name=".TransporterBoxList" />
+        <activity android:name=".TransporterMapsActivity" />
+        <activity android:name=".DestinatarioBoxList" />
+        <activity android:name=".DestinatarioMapsActivity" />
+        <activity android:name=".Help"></activity>
     </application>
 
 </manifest>

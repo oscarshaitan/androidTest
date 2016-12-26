@@ -73,9 +73,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
                 break;
-            case R.id.buttonR:
-                startActivity(new Intent(Login.this, Register.class));
-                break;
             default:
         }
     }
@@ -99,25 +96,34 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         //rol = backgroundWorker.execute(userL, crypth.AES_Encrypt(IMEI, crypth.SHA1(crypth.MD5(passL))), "login").toString();
         cargo = backgroundWorker.execute("login",userL,passL).get().toString();
 
-        System.out.println(cargo);
+
+
 
         //para bd local
        //rol =""+ db.getUser(userL,passL);
-        /*
-        Operador = 1
-        Admin = 2
-         */
-        if(cargo.equals("1")){
+
+        if(cargo.equals("1")){//ADMIN
+
             session.setLoggedin(true);
-            Intent intent = new Intent(Login.this, AdminMapsActivity.class);
+            //Intent intent = new Intent(Login.this, AdminMapsActivity.class);
+            Intent intent = new Intent(Login.this, AdminBoxList.class);
             intent.putExtra("User",userL );
             intent.putExtra("Imei",IMEI);
             startActivity(intent);
             finish();
         }
-        else if(cargo.equals("2")){
+        else if(cargo.equals("2")){//TRANSPORTADOR
+
             session.setLoggedin(true);
-            Intent intent = new Intent(Login.this, OperatorMapsActivity.class);
+            Intent intent = new Intent(Login.this, TransporterBoxList.class);
+            intent.putExtra("User",userL);
+            intent.putExtra("Imei",IMEI);
+            startActivity(intent);
+            finish();
+        }
+        else if(cargo.equals("3")){//DESTINATARIO
+            session.setLoggedin(true);
+            Intent intent = new Intent(Login.this, DestinatarioBoxList.class);
             intent.putExtra("User",userL);
             intent.putExtra("Imei",IMEI);
             startActivity(intent);

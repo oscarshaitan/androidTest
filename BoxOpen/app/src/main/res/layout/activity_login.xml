@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,13 +17,32 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:id="@+id/buttonR"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="#f9f3a1"
+            android:textColor="@color/abc_primary_text_disable_only_material_light"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/gss"
+            android:id="@+id/imageView"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/buttonR"
+            android:layout_centerHorizontal="true" />
+
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/userText"
-            android:layout_marginTop="33dp"
             android:hint="Usuario"
             android:textAlignment="center"
             android:background="@drawable/border"
@@ -30,8 +50,9 @@
             android:minWidth="310dp"
             android:textColorHint="#a6a1a1"
             android:textColorLink="#a6a1a1"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="31dp" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -41,25 +62,13 @@
             android:id="@+id/passText"
             android:hint="Contraseña"
             android:textAlignment="center"
-            android:layout_marginTop="58dp"
             android:background="@drawable/border"
             android:minHeight="40dp"
             android:minWidth="310dp"
             android:textColorHint="#a6a1a1"
             android:textColorLink="#a6a1a1"
-            android:layout_below="@+id/userText"
+            android:layout_centerVertical="true"
             android:layout_alignStart="@+id/userText" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/register"
-            android:id="@+id/buttonR"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:background="#f9f3a0"
-            android:textColor="@color/abc_primary_text_disable_only_material_light"
-            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
@@ -68,8 +77,10 @@
             android:id="@+id/buttonL"
             android:background="#f9f3a0"
             android:textColor="@color/abc_primary_text_disable_only_material_light"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/passText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp" />
+
 
     </RelativeLayout>
 </RelativeLayout>

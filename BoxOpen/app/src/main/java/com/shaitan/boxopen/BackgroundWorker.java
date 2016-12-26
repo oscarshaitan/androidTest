@@ -40,18 +40,30 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
+        String user = params[1];
         final String TOKEN = "TRUE";
 
-
-        String login_url = "http://190.131.205.166/gssbox/index.php/Login_android/login_usuarios_android";
+        //login
+        String login_url = "http://190.131.205.166/gssbox/index.php/Login_android/login_usuarios_android";// FUNCIONANDO (21/12/16)
+        //MAIN URL
         String Boxs_url = "http://190.131.205.166/gssbox/index.php/main_android/get_usuario_cajas";
-        String AdminBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuario_cajas";
-        String getOperatorrs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuarios_operador";
-        String openBoxs_url = "http://190.131.205.166/gssbox/index.php/main_android/send_open_request";
-        String adminOpenBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/send_open_request";
+        String openBoxs_url = "http://190.131.205.166/gssbox/index.php/main_android/send_open_request";// FUNCIONANDO (21/12/16)
+        String closeBoxs_url = "http://190.131.205.166/gssbox/index.php/main_android/send_close_request";
+        String GetBoxInfo_url = "http://190.131.205.166/gssbox/index.php/main_android/get_caja";// FUNCIONANDO (21/12/16)
+        String GetBoxInfoEmpresa_url = "http://190.131.205.166/gssbox/index.php/main_android/get_cajas_empresa";
+        String get_puntos_url =  "http://190.131.205.166/gssbox/index.php/main_android/get_puntos";// FUNCIONANDO (21/12/16)
+        String getLlaveDestinatarioBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_destino";// FUNCIONANDO (21/12/16)
+        String getLlaveTransportadorBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_transporte";//POR IMPLEMENTAR
+        String sendTransportadorPos_url = "http://190.131.205.166/gssbox/index.php/main_android/update_transportador_pos";
+
+
+        //ADMIN URL
+        String AdminBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuario_cajas";// FUNCIONANDO (21/12/16)
+        String adminOpenBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/send_open_request";// FUNCIONANDO (21/12/16) falta verificar el tipo de apertura en php, // PARA CUANDO SE VUELVE A UNDIR RETORNA UN "ok"
+        //String getOperatorrs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuarios_operador";
         try {
             if (type.equals("login")) {
-                String user = params[1];
+
                 String pass = params[2];
                 URL url = new URL(login_url);
                 //final HttpsURLConnection connection = prepareConnection(url);
@@ -80,11 +92,8 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 inputStream.close();
                 connection.disconnect();
                 return result;
-
-
             }
             if (type.equals("sendOpenRequest")) {
-                String user = params[1];
                 String idBox = params[2];
                     URL url = new URL(openBoxs_url);
                     final HttpURLConnection connection = prepareConnection(url);
@@ -113,8 +122,37 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                     connection.disconnect();
                     return result;
             }
+            if (type.equals("sendCloseRequest")) {
+                String idBox = params[2];
+                URL url = new URL(closeBoxs_url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8")
+                        + "&" + URLEncoder.encode("IdBox", "UTF-8") + "=" + URLEncoder.encode(idBox, "UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result = "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                return result;
+            }
             if (type.equals("sendAdminOpenRequest")) {
-                String idBox = params[1];
+                String idBox = params[2];
                 URL url = new URL(adminOpenBoxs_url);
                 final HttpURLConnection connection = prepareConnection(url);
                 OutputStream outputStream = connection.getOutputStream();
@@ -142,9 +180,34 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 return result;
             }
             if (type.equals("getBoxes")) {
-                String user = params[1];
-
                 URL url = new URL(Boxs_url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result = "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                return result;
+            }
+            if (type.equals("getBoxesEmpresa")) {
+                URL url = new URL(GetBoxInfoEmpresa_url);
                 final HttpURLConnection connection = prepareConnection(url);
                 OutputStream outputStream = connection.getOutputStream();
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
@@ -197,50 +260,16 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 connection.disconnect();
                 return result;
             }
-            if (type.equals("getOperators")) {
-
-                URL url = new URL(getOperatorrs_url);
-                final HttpURLConnection connection = prepareConnection(url);
-                OutputStream outputStream = connection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-
-                String post_data = URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
-
-                bufferedWriter.write(post_data);
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-
-                InputStream inputStream = connection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-
-                String result = "";
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                connection.disconnect();
-                return result;
-            }
-            if (type.equals("addBoxOperator")) {
-                //type,operador destino, operador transporte, latitud, longitud
-                String operatorDestinoId = params[1];
-                String operatorTransporteId = params[2];
-                String latitud = params[3];
-                String longitud = params[4];
-
-                URL url = new URL(getOperatorrs_url);
+            if (type.equals("GetBoxInfo")) {
+                String idBox = params[2];
+                URL url = new URL(GetBoxInfo_url);
                 final HttpURLConnection connection = prepareConnection(url);
                 OutputStream outputStream = connection.getOutputStream();
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 
                 String post_data = URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8")
-                        +"&"+URLEncoder.encode("operatorDestinoId","UTF-8")+"="+ URLEncoder.encode(operatorDestinoId,"UTF-8")
-                        +"&"+URLEncoder.encode("operatorTransporteId","UTF-8")+"="+ URLEncoder.encode(operatorTransporteId,"UTF-8")
-                        +"&"+URLEncoder.encode("latitud","UTF-8")+"="+ URLEncoder.encode(latitud,"UTF-8")
-                        +"&"+URLEncoder.encode("longitud","UTF-8")+"="+ URLEncoder.encode(longitud,"UTF-8");
+                        +"&"+URLEncoder.encode("IdBox","UTF-8")+"="+ URLEncoder.encode(idBox,"UTF-8")
+                        +"&"+URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8");
 
                 bufferedWriter.write(post_data);
                 bufferedWriter.flush();
@@ -260,6 +289,113 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 connection.disconnect();
                 return result;
             }
+            if (type.equals("get_puntos")) {
+                String idBox = params[2];
+                URL url = new URL(get_puntos_url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8")
+                        +"&"+URLEncoder.encode("IdBox","UTF-8")+"="+ URLEncoder.encode(idBox,"UTF-8")
+                        +"&"+URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result = "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                return result;
+            }
+            if (type.equals("llaveDestinatario")) {
+                String idBox = params[2];
+                URL url = new URL(getLlaveDestinatarioBox_url);
+                //final HttpsURLConnection connection = prepareConnection(url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("IdBox", "UTF-8") + "=" + URLEncoder.encode(idBox, "UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result= "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null){
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                return result;
+            }
+            if (type.equals("llaveTransportador")) {
+                String idBox = params[2];
+                URL url = new URL(getLlaveTransportadorBox_url);
+                //final HttpsURLConnection connection = prepareConnection(url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("IdBox", "UTF-8") + "=" + URLEncoder.encode(idBox, "UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result= "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null){
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+                return result;
+            }
+            if (type.equals("sendTransporterLocation")) {
+                String latitud = params[2];
+                String longitud = params[3];
+                URL url = new URL(sendTransportadorPos_url);
+                //final HttpsURLConnection connection = prepareConnection(url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("latitud", "UTF-8") + "=" + URLEncoder.encode(latitud, "UTF-8")
+                        +"&"+URLEncoder.encode("longitud","UTF-8")+"="+ URLEncoder.encode(longitud,"UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8")
+                        +"&"+URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+            }
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -467,7 +467,6 @@ public class OperatorMapsActivity extends FragmentActivity implements View.OnCli
         super.onStart();
         mGoogleApiClient.connect();
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -489,13 +488,11 @@ public class OperatorMapsActivity extends FragmentActivity implements View.OnCli
         mLocationRequest.setFastestInterval(350);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
-
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection Suspended");
         mGoogleApiClient.connect();
     }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
