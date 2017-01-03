@@ -26,7 +26,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
     private Button login, register;
     private EditText pass,user,cargo;
-    private DbHelper db;
     private crypth crypth = new crypth();
     private Session session;
     TelephonyManager telephonyManager;
@@ -37,7 +36,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        db = new DbHelper(this);
         session = new Session(this);
         login = (Button)findViewById(R.id.buttonL);
         register = (Button)findViewById(R.id.buttonR);
@@ -45,7 +43,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         pass = (EditText)findViewById(R.id.passText);
         login.setOnClickListener(this);
         register.setOnClickListener(this);
-        telephonyManager = (TelephonyManager) this.getSystemService(this.TELEPHONY_SERVICE);
+        telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
@@ -85,7 +83,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String token = "TRUE";
        /* try {
             //System.out.println(crypth.AES_Encrypt("USER1IMEITEST00000000000", "TRUE" ));
-            //System.out.println(crypth.AES_Decrypt("USER1IMEITEST00000000000", "rNJP9bixc2OR3KDNlCnDEw=="));
+
+            //String test = crypth.AES_Encrypt("USER1IMEITEST00000000000", "TRUE" );
+            //System.out.println(crypth.AES_Decrypt("USER1IMEITEST00000000000", test));
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }*/

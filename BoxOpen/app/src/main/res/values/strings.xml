@@ -12,8 +12,8 @@
     <string name="passR">Pass</string>
     <string name="rol">Rol</string>
     <string name="logout">Logout</string>
-    <string name="title_activity_admin_map_panel">Map</string>
-    <string name="title_activity_admin_maps">Map</string>
+    <string name="title_activity_admin_map_panel">GSS BOX</string>
+    <string name="title_activity_admin_maps">GSS BOX</string>
     <string name="tap_instructions">tap_instructions</string>
     <string name="title_activity_operator_maps">OperatorMap</string>
     <string name="usuario">Usuario</string>

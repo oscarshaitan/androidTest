@@ -53,17 +53,6 @@
         android:layout_alignParentStart="true"
         android:visibility="gone" />
 
-    <ToggleButton
-        android:text="Chapa"
-        android:layout_width="160dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/chapa"
-        android:textOn="Llave Activada"
-        android:textOff="Llave Desactivada"
-        android:layout_alignParentStart="true" />
-
     <GridLayout
         android:layout_width="200dp"
         android:layout_height="75dp"
@@ -223,6 +212,24 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Terminar Entrega"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/terminarEntrega" />
+
+    <ToggleButton
+        android:text="Chapa"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:id="@+id/chapa"
+        android:textOn="Solicitar cierre"
+        android:textOff="Abrir"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
 

@@ -59,7 +59,7 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
     private static final String TAG = "TransporterMapsActivity";
     private LocationManager LM;
 
-    private Button btnOpen;
+    private Button terminarEntrega;
     private ToggleButton chapa;
     private boolean chapaFlag = false;
     private boolean showHideBoxMarkerFlag = false;
@@ -91,14 +91,14 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
         menuOptions.add("Update Box");
         menuOptions.add("Show/Hide Box");
-        // menuOptions.add("Help");
+        menuOptions.add("Help");
         menuOptions.add("Logout");
 
         Bundle bundle = getIntent().getExtras();
         User = bundle.getString("User");
         IMEI = bundle.getString("Imei");
         IdBox = bundle.getString("IdBox");
-        //db = new DbHelper(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transporter_maps);
 
@@ -118,11 +118,11 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             }
         });
 
-        btnOpen = (Button) findViewById(R.id.openBox);
-        btnOpen.setOnClickListener(new View.OnClickListener() {
+        terminarEntrega = (Button)findViewById(R.id.terminarEntrega);
+        terminarEntrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendOpenRequest(IdBox);
+                sendTerminarEntrega(IdBox);
             }
         });
 
@@ -138,7 +138,7 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
                     chapaFlag = false;
                     sendCloseRequest(IdBox);
                     estadoChapa(IdBox);
-                } else {
+                } if (chapaFlag == false) {
                     chapaFlag = true;
                     sendOpenRequest(IdBox);
                     estadoChapa(IdBox);
@@ -327,6 +327,20 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
         inActivateMenu();
     }
 
+    public void sendTerminarEntrega(String BoxID){
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+
+        try {
+            String BoxStatus  = backgroundWorker.execute("sendTerminarEntrega",User,BoxID).get().toString();
+            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_SHORT).show();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        inActivateMenu();
+    }
+
     public void getStopsBox(String IdBox) {
         Circle circleStops;
         int idBox = Integer.parseInt(IdBox);
@@ -481,20 +495,20 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             long min = diffSec / 60;
             long sec = diffSec % 60;
 
-            //if ((upDistance > 5.0 && sec >= 30) || (min >= 1 || firstUpdate)) {
-            firstUpdate = false;
-            try {
-                LastLocation.setLatitude(location.getLatitude());
-                LastLocation.setLongitude(location.getLongitude());
-                checkDistances(location);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if ((upDistance > 5.0 && sec >= 30) || (min >= 1 || firstUpdate)) {
+                firstUpdate = false;
+                try {
+                    LastLocation.setLatitude(location.getLatitude());
+                    LastLocation.setLongitude(location.getLongitude());
+                    checkDistances(location);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                lastTimeUpdate = TimeUpdate;
+                backgroundWorker.execute("sendTransporterLocation", User, "" + location.getLatitude(), "" + location.getLongitude());
             }
-            lastTimeUpdate = TimeUpdate;
-            backgroundWorker.execute("sendTransporterLocation", User, "" + location.getLatitude(), "" + location.getLongitude());
-            //}
         }
     }
 

@@ -27,15 +27,12 @@
         <activity
             android:name=".AdminMapsActivity"
             android:label="@string/title_activity_admin_maps" />
-        <activity
-            android:name=".OperatorMapsActivity"
-            android:label="@string/title_activity_operator_maps" />
         <activity android:name=".AdminBoxList" />
         <activity android:name=".TransporterBoxList" />
         <activity android:name=".TransporterMapsActivity" />
         <activity android:name=".DestinatarioBoxList" />
         <activity android:name=".DestinatarioMapsActivity" />
-        <activity android:name=".Help"></activity>
+        <activity android:name=".Help"/>
     </application>
 
 </manifest>

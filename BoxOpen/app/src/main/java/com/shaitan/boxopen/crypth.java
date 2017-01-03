@@ -7,11 +7,12 @@ import java.security.NoSuchAlgorithmException;
 import com.shaitan.boxopen.AESCrypt;
 
 
+
 /**
  * Created by Shaitan on 3/11/2016.
  */
 public class crypth {
-
+    AESCrypt AES = new AESCrypt();
 
     public String MD5(String md5) {
         try {
@@ -48,11 +49,15 @@ public class crypth {
     }
 
     public String AES_Encrypt(String KEY, String message) throws GeneralSecurityException {
-        String messageEncrypted = AESCrypt.encrypt(KEY, message);
+        AES.setKey(KEY);
+        AES.encrypt(message.trim());
+        String messageEncrypted = AES.getEncryptedString();
         return messageEncrypted;
     }
     public String AES_Decrypt(String KEY, String message) throws GeneralSecurityException {
-        String messageDecrypted = AESCrypt.decrypt(KEY, message);
+        AES.setKey(KEY);
+        AES.decrypt(message.trim());
+        String messageDecrypted = AES.getDecryptedString();
         return messageDecrypted;
     }
 

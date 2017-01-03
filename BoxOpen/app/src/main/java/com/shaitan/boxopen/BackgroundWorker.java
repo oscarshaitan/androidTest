@@ -55,6 +55,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
         String getLlaveDestinatarioBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_destino";// FUNCIONANDO (21/12/16)
         String getLlaveTransportadorBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_transporte";//POR IMPLEMENTAR
         String sendTransportadorPos_url = "http://190.131.205.166/gssbox/index.php/main_android/update_transportador_pos";
+        String sendTerminarEntrega_url = "http://190.131.205.166/gssbox/index.php/main_android/terminar_entrega";
 
 
         //ADMIN URL
@@ -395,6 +396,36 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedWriter.close();
                 outputStream.close();
             }
+            if (type.equals("sendTerminarEntrega")) {
+               /* String idBox = params[2];
+                URL url = new URL(sendTerminarEntrega_url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("user", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8")
+                        + "&" + URLEncoder.encode("IdBox", "UTF-8") + "=" + URLEncoder.encode(idBox, "UTF-8")
+                        +"&"+URLEncoder.encode("token","UTF-8")+"="+ URLEncoder.encode(TOKEN,"UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+                String result = "";
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();*/
+                String result = "POR IMPLEMENTAR";
+                return result;
+            }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -478,6 +509,4 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
         connection.setDoInput(true);
         return connection;
     }
-
-
 }

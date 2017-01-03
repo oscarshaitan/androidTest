@@ -41,7 +41,7 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
 
     private GoogleMap googleMap;
     private GoogleMap mMap = googleMap;
-    //private Button btnOpen;
+    private Button terminarEntrega;
     private ImageButton btnMenu;
     private ToggleButton chapa;
     private boolean chapaFlag = false;
@@ -90,29 +90,26 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-       /* btnOpen = (Button)findViewById(R.id.openBox);
-        btnOpen.setOnClickListener(new View.OnClickListener() {
+        terminarEntrega = (Button)findViewById(R.id.terminarEntrega);
+        terminarEntrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendOpenRequest(IdBox);
+                sendTerminarEntrega(IdBox);
             }
-        });*/
+        });
 
         chapa = (ToggleButton)findViewById((R.id.chapa));
-
         activateChapa();
-
         chapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 inActivateMenu();
-                if(chapaFlag==true){
-                    chapaFlag=false;
+                if (chapaFlag == true) {
+                    chapaFlag = false;
                     sendCloseRequest(IdBox);
                     estadoChapa(IdBox);
-                }
-                else{
-                    chapaFlag=true;
+                }if (chapaFlag == false) {
+                    chapaFlag = true;
                     sendOpenRequest(IdBox);
                     estadoChapa(IdBox);
                 }
@@ -395,6 +392,20 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
         inActivateMenu();
     }
 
+    public void sendTerminarEntrega(String BoxID){
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+
+        try {
+            String BoxStatus  = backgroundWorker.execute("sendTerminarEntrega",User,BoxID).get().toString();
+            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_SHORT).show();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        inActivateMenu();
+    }
+
     @Override
     public void onBackPressed(){
         // code here to show dialog
@@ -425,19 +436,21 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
 
     public void estadoChapa(String BoxID){
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-        String estadoLlave = "test";
+        String estadoLlave = "";
         try {
-            estadoLlave = backgroundWorker.execute("llaveDestinatario",User,BoxID).get().toString();
+            estadoLlave = backgroundWorker.execute("llaveDestinatario", User, BoxID).get().toString();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        if(estadoLlave.equals("1")) {
+        if (estadoLlave.equals("1")) {
             chapa.setChecked(true);
+            chapaFlag =true;
         }
-        if(estadoLlave.equals("0")) {
+        if (estadoLlave.equals("0")) {
             chapa.setChecked(false);
+            chapaFlag = false;
         }
     }
 

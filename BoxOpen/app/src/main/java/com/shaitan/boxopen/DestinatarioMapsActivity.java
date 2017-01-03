@@ -59,7 +59,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
     private static final String TAG = "TransporterMapsActivity";
     private LocationManager LM;
 
-    //private Button btnOpen;
+
     private ToggleButton chapa;
     private boolean chapaFlag = false;
     private ImageButton btnMenu;
@@ -95,7 +95,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         User = bundle.getString("User");
         IMEI = bundle.getString("Imei");
         IdBox = bundle.getString("IdBox");
-        //db = new DbHelper(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinatario_maps);
 
@@ -115,13 +114,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
             }
         });
 
-       /* btnOpen = (Button)findViewById(R.id.openBox);
-        btnOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendOpenRequest(IdBox);
-            }
-        });*/
 
 
         chapa = (ToggleButton)findViewById((R.id.chapa));
@@ -134,7 +126,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                     chapaFlag = false;
                     sendCloseRequest(IdBox);
                     estadoChapa(IdBox);
-                } else {
+                }if (chapaFlag == false) {
                     chapaFlag = true;
                     sendOpenRequest(IdBox);
                     estadoChapa(IdBox);
