@@ -130,7 +130,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             finish();
         }
         else{
-            Toast.makeText(getApplicationContext(), "Wrong Combination", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
         }
     }
 

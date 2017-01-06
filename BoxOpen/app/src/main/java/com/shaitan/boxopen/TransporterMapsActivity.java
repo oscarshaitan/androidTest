@@ -89,9 +89,9 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
                 .addApi(LocationServices.API)
                 .build();
 
-        menuOptions.add("Update Box");
-        menuOptions.add("Show/Hide Box");
-        menuOptions.add("Help");
+        menuOptions.add("Actualziar Caja");
+        menuOptions.add("Mostrar/Ocultar Caja");
+        menuOptions.add("Ayuda");
         menuOptions.add("Logout");
 
         Bundle bundle = getIntent().getExtras();

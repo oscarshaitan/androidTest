@@ -87,10 +87,12 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 .addApi(LocationServices.API)
                 .build();
 
-        menuOptions.add("Update Box");
-        menuOptions.add("Show/Hide Stop");
+        menuOptions.add("Actualziar Caja");
+        menuOptions.add("Mostrar/Ocultar Parada");
+        menuOptions.add("Ayuda");
         menuOptions.add("Help");
         menuOptions.add("Logout");
+
         Bundle bundle = getIntent().getExtras();
         User = bundle.getString("User");
         IMEI = bundle.getString("Imei");
@@ -310,7 +312,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         }
         mMap.clear();
         mMap.addMarker(new MarkerOptions()
-                .title("Box #"+ (idBox+1))
+                .title("Caja #"+ (idBox+1))
                 .position(new LatLng(latitud, longitud)));
 
 
@@ -346,7 +348,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
             case 0:
                 getABox(IdBox);
                 break;
-            //Show/Hide Box
+            //Show/Hide stop
             case 1:
                 showHideStopsMarker();
                 break;
@@ -368,7 +370,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
             getABox(IdBox);
             //
             mMap.addMarker(new MarkerOptions()
-                    .title("Box #" + (IdBox))
+                    .title("Caja #" + (IdBox))
                     .position(new LatLng(latitud, longitud)));
             showHideStopsMarkerFlag = true;
         } else {
@@ -480,7 +482,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 stopData[2] = Double.valueOf(explrObject2.getString("longitud"));
                 stopListJson.add(stopData);
                 mMap.addMarker(new MarkerOptions()
-                        .title("Stop #" + stopData[0] + " " + explrObject2.getString("nombre"))
+                        .title("Parada #" + stopData[0] + " " + explrObject2.getString("nombre"))
                         .position(new LatLng(stopData[1], stopData[2]))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 circleStops = mMap.addCircle(new CircleOptions()

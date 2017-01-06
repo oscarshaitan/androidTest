@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,8 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
     private LatLng newMarkerLatLng;
     private List<String> menuOptions = new ArrayList<>();
     private List<String> boxsAvalible = new ArrayList<>();
+    final Handler handler = new Handler();
+    private final int updateVariables = 30000;
 
 
     private ImageButton btnMenu;
@@ -47,7 +50,7 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        menuOptions.add("Update Box");
+        menuOptions.add("Actualizar cajas");
         menuOptions.add("Logout");
         Bundle bundle = getIntent().getExtras();
         User = bundle.getString("User");
@@ -81,6 +84,7 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
 
         boxMenu =(ListView) findViewById(R.id.BoxList);
         getAllBoxs();
+        scheduleSendLocation();
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,boxsAvalible);
         boxMenu.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -96,6 +100,7 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
     public void menuAction(int optionSelected){
 
         switch (optionSelected){
@@ -187,7 +192,7 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
             if(stopList.get(i)[8] == 1){
                 estado_tapa="Abierta";
             }
-            boxsAvalible.add("Box ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
+            boxsAvalible.add("Caja ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
         }
         prepareBoxList();
     }
@@ -225,5 +230,14 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
     {
         logout();
         finish();
+    }
+
+    public void scheduleSendLocation() {
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                getAllBoxs();
+                handler.postDelayed(this, updateVariables);
+            }
+        }, updateVariables);
     }
 }

@@ -3,6 +3,7 @@ package com.shaitan.boxopen;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -430,7 +431,9 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("testing");
+            //Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
+           // e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {

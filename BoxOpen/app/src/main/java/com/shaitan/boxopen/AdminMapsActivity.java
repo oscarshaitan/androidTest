@@ -46,6 +46,8 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
     private ToggleButton chapa;
     private boolean chapaFlag = false;
     private boolean menuFlag = true;
+    private boolean showHideStopsMarkerFlag = false;
+    private boolean showHideBoxMarkerFlag = true;
     private Session session;
     private ListView menuList;
     private TextView TVtemp, TVluz, TVhumedad, TVvoltaje, TVbateria, TVtapa, TVkey, TVsistema;
@@ -59,8 +61,10 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        menuOptions.add("Update Box");
-        menuOptions.add("Help");
+        menuOptions.add("Actualziar Caja");
+        menuOptions.add("Mostrar/Ocultar Parada");
+        menuOptions.add("Mostrar/Ocultar Caja");
+        menuOptions.add("Ayuda");
         menuOptions.add("Logout");
         Bundle bundle = getIntent().getExtras();
         User = bundle.getString("User");
@@ -183,16 +187,60 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
             case 0:
                 getABox(IdBox);
                 break;
-            //help
+            //Show/Hide stop
             case 1:
+                showHideStopsMarker();
+                break;
+            //Show/Hide Box
+            case 2:
+                showHideBoxMarker();
+                break;
+            //help
+            case 3:
                 help();
                 //  System.out.println("NOT IMPLEMENTED YET");
                 break;
             //logout
-            case 2:
+            case 4:
                 logout();
                 break;
         }
+    }
+
+    public void showHideBoxMarker() {
+        if (!showHideBoxMarkerFlag) {
+            mMap.clear();
+            if(!showHideStopsMarkerFlag) {
+                getStopsBox(IdBox);
+            }
+            mMap.addMarker(new MarkerOptions()
+                    .title("Caja #" + (IdBox))
+                    .position(new LatLng(latitud, longitud)));
+            showHideBoxMarkerFlag = true;
+        } else {
+            mMap.clear();
+            getStopsBox(IdBox);
+            showHideBoxMarkerFlag = false;
+        }
+        inActivateMenu();
+    }
+
+    public void showHideStopsMarker() {
+        if (!showHideStopsMarkerFlag) {
+            mMap.clear();
+            getABox(IdBox);
+            //
+            mMap.addMarker(new MarkerOptions()
+                    .title("Caja #" + (IdBox))
+                    .position(new LatLng(latitud, longitud)));
+            showHideStopsMarkerFlag = true;
+        } else {
+            mMap.clear();
+            getABox(IdBox);
+            getStopsBox(IdBox);
+            showHideStopsMarkerFlag = false;
+        }
+        inActivateMenu();
     }
 
     public void getABox(String IdBox){
@@ -315,6 +363,7 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
                         .center(new LatLng(stopData[1], stopData[2]))
                         .radius(15)
                         .strokeColor(Color.RED));
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -420,8 +469,8 @@ public class AdminMapsActivity extends FragmentActivity implements OnMapReadyCal
     public void scheduleSendLocation() {
         handler.postDelayed(new Runnable() {
             public void run() {
-                getABox(IdBox);
-                getStopsBox(IdBox);
+                showHideBoxMarker();
+                showHideStopsMarker();
                 estadoChapa(IdBox);// this method will contain your almost-finished HTTP calls
                 handler.postDelayed(this, updateVariables);
             }
