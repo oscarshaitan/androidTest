@@ -24,7 +24,7 @@ public class Help extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        menuOptions.add("Back");
+        menuOptions.add("Atras");
         menuOptions.add("Logout");
         Bundle bundle = getIntent().getExtras();
         prevActivity = bundle.getString("PrevActivity");

@@ -1,6 +1,7 @@
 package com.shaitan.boxopen;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -36,6 +39,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
 
@@ -49,24 +53,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class TransporterMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class TransporterMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks{
 
-    private GoogleMap googleMap;
-    private GoogleMap mMap = googleMap;
 
-    private LocationRequest mLocationRequest;
+    private GoogleMap mMap;
+    TelephonyManager telephonyManager;
+    //
     private GoogleApiClient mGoogleApiClient;
     private static final String TAG = "TransporterMapsActivity";
-    private LocationManager LM;
 
     private Button terminarEntrega;
     private ToggleButton chapa;
     private boolean chapaFlag = false;
-    private boolean showHideBoxMarkerFlag = false;
+    private boolean firstload = true;
+    private boolean showBoxMarkerFlag = false;
     private ImageButton btnMenu;
     private Session session;
     private ListView menuList;
-    private TextView TVtemp, TVluz, TVhumedad, TVvoltaje, TVbateria, TVtapa, TVkey, TVsistema;
+    private TextView TVtemp, TVluz, TVhumedad, TVvoltaje, TVbateria, TVtapa, TVkey, TVsistema, Gpsfail;
     private List<Double[]> stopList = new ArrayList<>();
     private List<Double[]> stopListJson = new ArrayList<>();
 
@@ -85,13 +89,13 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
 
-        menuOptions.add("Actualziar Caja");
+        menuOptions.add("Actualziar Caja ");
         menuOptions.add("Mostrar/Ocultar Caja");
         menuOptions.add("Ayuda");
+        menuOptions.add("Atras");
         menuOptions.add("Logout");
 
         Bundle bundle = getIntent().getExtras();
@@ -155,6 +159,8 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
         TVtapa = (TextView) findViewById(R.id.tapa);
         TVkey = (TextView) findViewById(R.id.key);
         TVsistema = (TextView) findViewById(R.id.sistema);
+        Gpsfail =  (TextView) findViewById(R.id.gpsfail);
+        Gpsfail.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -170,6 +176,17 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
@@ -180,6 +197,7 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.clear();
+
         getABox(IdBox);
         if (tipoApertura.equals("Dos llaves")){
             chapa.setClickable(true);
@@ -196,9 +214,9 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             chapa.setChecked(false);
         }
         estadoChapa(IdBox);
-
-        scheduleSendLocation();
         getStopsBox(IdBox);
+        scheduleSendLocation();
+
 
         final ArrayAdapter<String> adapterM = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, menuOptions);
         menuList.setAdapter(adapterM);
@@ -209,20 +227,17 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             }
         });
         inActivateMenu();
+    }
 
-        LM = (LocationManager) getSystemService(LOCATION_SERVICE);
-        List<String> providers = LM.getAllProviders();
-        Location location = null, temLocation;
-        for (String providerT : providers) {
-            temLocation = LM.getLastKnownLocation(providerT);
-            LastLocation = temLocation;
-
-
-            if (location == null
-                    || (temLocation != null && location.getTime() < temLocation
-                    .getTime()))
-                location = temLocation;
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
         }
+        return true;
     }
 
     public void menuAction(int optionSelected) {
@@ -248,8 +263,12 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             //  System.out.println("NOT IMPLEMENTED YET");
             break;
 
-            //logout
+            //atras
             case 3:
+                onBackPressed();
+                break;
+                //logout
+            case 4:
                 logout();
                 break;
         }
@@ -291,11 +310,13 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
         try {
             String BoxStatus = backgroundWorker.execute("sendOpenRequest", User, BoxID).get().toString();
-            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR al intentar solicitar apertura, contactar con soporte", Toast.LENGTH_LONG).show();
         }
         /*String IMEI = "";
 
@@ -318,11 +339,13 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
         try {
             String BoxStatus = backgroundWorker.execute("sendCloseRequest", User, BoxID).get().toString();
-            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR al intentar solicitar cierre, contactar con soporte", Toast.LENGTH_LONG).show();
         }
         inActivateMenu();
     }
@@ -332,11 +355,13 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
         try {
             String BoxStatus  = backgroundWorker.execute("sendTerminarEntrega",User,BoxID).get().toString();
-            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR  al intentar solicitar terminar entregas, contactar con soporte", Toast.LENGTH_LONG).show();
         }
         inActivateMenu();
     }
@@ -352,6 +377,8 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR de conexción al intentar traer el listado de las paradas de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
         String completeJson2 = "{ " + '"' + "Puntos" + '"' + ": " + incompleteJson2 + "}";
 
@@ -369,7 +396,7 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
                 stopData[2] = Double.valueOf(explrObject2.getString("longitud"));
                 stopListJson.add(stopData);
                 mMap.addMarker(new MarkerOptions()
-                        .title("Stop #" + stopData[0] + " " + explrObject2.getString("nombre"))
+                        .title(explrObject2.getString("nombre"))
                         .position(new LatLng(stopData[1], stopData[2]))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 circleStops = mMap.addCircle(new CircleOptions()
@@ -379,6 +406,8 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "No se recuperó información de las paradas de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -394,6 +423,8 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR de conexción al tratar de recuperar la información de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
         String completeJson = "{ " + '"' + "Box" + '"' + ": " + incompleteJson + "}";
 
@@ -452,16 +483,24 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             }
             TVsistema.setText(estadoSistemaS);
 
+            mMap.addMarker(new MarkerOptions()
+                    .title("Caja #"+ (idBox+1))
+                    .position(new LatLng(latitud, longitud)));
+            inActivateMenu();
+
         } catch (JSONException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "No se recuperó información de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
-        inActivateMenu();
+
     }
 
     public void scheduleSendLocation() {
         handler.postDelayed(new Runnable() {
             public void run() {
-                getABox(IdBox);
+                refresMap();
+                getMyPos();
                 estadoChapa(IdBox);
                 handler.postDelayed(this, updateVariables);
             }
@@ -479,35 +518,55 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
         finish();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+
+    public void getMyPos() {
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-        if (!tipoApertura.equals("Dos llaves")) {
-            double upDistance = 0;
-            LatLng updatePos = new LatLng(location.getLatitude(), location.getLongitude());
-            LatLng lastPos = new LatLng(LastLocation.getLatitude(), LastLocation.getLongitude());
-            upDistance = SphericalUtil.computeDistanceBetween(lastPos, updatePos);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+        }
+        Location temLocation;
+        temLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if(temLocation == null){
+            Gpsfail.setVisibility(View.VISIBLE);
+        }
+        else {
+            Gpsfail.setVisibility(View.INVISIBLE);
+            if (firstload) {
+                firstload = false;
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(temLocation.getLatitude(), temLocation.getLongitude()), 70), 5000, null);
+                LastLocation = temLocation;
+            }
 
-            Date TimeUpdate = new Date();
-            long mills = TimeUpdate.getTime() - lastTimeUpdate.getTime();
+            if (!tipoApertura.equals("Dos llaves")) {
+                double upDistance = 0;
+                LatLng updatePos = new LatLng(temLocation.getLatitude(), temLocation.getLongitude());
+                LatLng lastPos = new LatLng(LastLocation.getLatitude(), LastLocation.getLongitude());
+                upDistance = SphericalUtil.computeDistanceBetween(lastPos, updatePos);
 
-            long diffSec = mills / 1000;
-            long min = diffSec / 60;
-            long sec = diffSec % 60;
+                Date TimeUpdate = new Date();
+                long mills = TimeUpdate.getTime() - lastTimeUpdate.getTime();
 
-            if ((upDistance > 5.0 && sec >= 30) || (min >= 1 || firstUpdate)) {
-                firstUpdate = false;
-                try {
-                    LastLocation.setLatitude(location.getLatitude());
-                    LastLocation.setLongitude(location.getLongitude());
-                    checkDistances(location);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                long diffSec = mills / 1000;
+                long min = diffSec / 60;
+                long sec = diffSec % 60;
+
+                if ((upDistance > 5.0 && sec >= 30) || (min >= 1 || firstUpdate)) {
+                    firstUpdate = false;
+                    try {
+                        checkDistances(temLocation);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    lastTimeUpdate = TimeUpdate;
+                    LastLocation = temLocation;
+                    backgroundWorker.execute("sendTransporterLocation", User, "" + LastLocation.getLatitude(), "" + LastLocation.getLongitude());
                 }
-                lastTimeUpdate = TimeUpdate;
-                backgroundWorker.execute("sendTransporterLocation", User, "" + location.getLatitude(), "" + location.getLongitude());
             }
         }
     }
@@ -555,6 +614,8 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR al intentar solicitar el valor de la llave Destinatario contactar con soporte", Toast.LENGTH_LONG).show();
         }
         if (estadoLlave.equals("1")) {
             chapa.setChecked(true);
@@ -567,19 +628,24 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
     }
 
     public void showHideBoxMarker() {
-        if (!showHideBoxMarkerFlag) {
-            mMap.clear();
-            getStopsBox(IdBox);
-            mMap.addMarker(new MarkerOptions()
-                    .title("Box #" + (IdBox))
-                    .position(new LatLng(latitud, longitud)));
-            showHideBoxMarkerFlag = true;
-        } else {
-            mMap.clear();
-            getStopsBox(IdBox);
-            showHideBoxMarkerFlag = false;
+        if (showBoxMarkerFlag){
+            showBoxMarkerFlag = false;
         }
+        else{
+            showBoxMarkerFlag = true;
+        }
+        refresMap();
         inActivateMenu();
+    }
+
+    public void refresMap(){
+        mMap.clear();
+        if (showBoxMarkerFlag) {
+            getStopsBox(IdBox);
+            getABox(IdBox);
+        } else {
+            getStopsBox(IdBox);
+        }
     }
 
     @Override
@@ -598,17 +664,7 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        }
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(700);
-        mLocationRequest.setFastestInterval(350);
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        getMyPos();
     }
 
     @Override
@@ -617,10 +673,6 @@ public class TransporterMapsActivity extends FragmentActivity implements OnMapRe
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
-    }
 
     public void help(){
         Intent intent = new Intent(TransporterMapsActivity.this, Help.class);

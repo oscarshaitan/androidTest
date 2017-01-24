@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import com.shaitan.boxopen.AESCrypt;
+//import com.shaitan.boxopen.AESCrypt;
 
 
 
@@ -13,7 +13,7 @@ import com.shaitan.boxopen.AESCrypt;
  */
 public class crypth {
     AESCrypt AES = new AESCrypt();
-
+    //AES aes = new AES();
     public String MD5(String md5) {
         try {
             java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
@@ -60,6 +60,13 @@ public class crypth {
         String messageDecrypted = AES.getDecryptedString();
         return messageDecrypted;
     }
+
+   /* public String AES_E() throws Exception {
+        return aes.bytesToHex(aes.encrypt("hola"));
+    }
+    public String AES_D() throws Exception {
+        return new String(aes.decrypt("02e56fb3df2507fdb14d347f0589e5a5"));
+    }*/
 
 
 

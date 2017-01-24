@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.shaitan.boxopen.Register">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#ffffff">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:id="@+id/buttonB"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:background="#f9f3a0"
+            android:textColor="@color/abc_primary_text_disable_only_material_light" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registerTitle"
+            android:id="@+id/buttonA"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="true"
+            android:background="#f9f3a0"
+            android:textColor="@color/abc_primary_text_disable_only_material_light" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/nameText"
+            android:layout_marginTop="33dp"
+            android:hint="Usuario"
+            android:textAlignment="center"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/passRText"
+            android:hint="Contraseña"
+            android:textAlignment="center"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
+            android:layout_below="@+id/nameText"
+            android:layout_alignStart="@+id/nameText" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/rolText"
+            android:textAlignment="center"
+            android:hint="Rol 1: Adim 2: Operador"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/border"
+            android:minHeight="40dp"
+            android:minWidth="310dp"
+            android:textColorHint="#a6a1a1"
+            android:textColorLink="#a6a1a1"
+            android:layout_below="@+id/passRText"
+            android:layout_alignStart="@+id/passRText" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.telephony.TelephonyManager;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -34,6 +37,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
 
         session = new Session(this);
@@ -81,7 +85,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         String rolTemp = "";
         String cargo = "";
         String token = "TRUE";
-       /* try {
+        try {
+       /*
             //System.out.println(crypth.AES_Encrypt("USER1IMEITEST00000000000", "TRUE" ));
 
             //String test = crypth.AES_Encrypt("USER1IMEITEST00000000000", "TRUE" );
@@ -89,48 +94,58 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }*/
+            //System.out.println(crypth.AES_E());
 
-        String IMEI = telephonyManager.getDeviceId();
-        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+            //System.out.println(crypth.AES_D());
 
-        //rol = backgroundWorker.execute(userL, crypth.AES_Encrypt(IMEI, crypth.SHA1(crypth.MD5(passL))), "login").toString();
-        cargo = backgroundWorker.execute("login",userL,passL).get().toString();
+            String IMEI = telephonyManager.getDeviceId();
+            BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+
+            //rol = backgroundWorker.execute(userL, crypth.AES_Encrypt(IMEI, crypth.SHA1(crypth.MD5(passL))), "login").toString();
+            cargo = backgroundWorker.execute("login", userL, passL).get().toString();
 
 
+            //para bd local
+            //rol =""+ db.getUser(userL,passL);
 
+            //Check GPS available
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(this, "Debe encender el GPS para usar la aplicación", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                if (cargo.equals("1")) {//ADMIN
 
-        //para bd local
-       //rol =""+ db.getUser(userL,passL);
+                    session.setLoggedin(true);
 
-        if(cargo.equals("1")){//ADMIN
+                    Intent intent = new Intent(Login.this, AdminBoxList.class);
+                    intent.putExtra("User", userL);
+                    intent.putExtra("Imei", IMEI);
+                    startActivity(intent);
+                    finish();
+                } else if (cargo.equals("2")) {//TRANSPORTADOR
 
-            session.setLoggedin(true);
-            //Intent intent = new Intent(Login.this, AdminMapsActivity.class);
-            Intent intent = new Intent(Login.this, AdminBoxList.class);
-            intent.putExtra("User",userL );
-            intent.putExtra("Imei",IMEI);
-            startActivity(intent);
-            finish();
+                    session.setLoggedin(true);
+                    Intent intent = new Intent(Login.this, TransporterBoxList.class);
+                    intent.putExtra("User", userL);
+                    intent.putExtra("Imei", IMEI);
+                    startActivity(intent);
+                    finish();
+                } else if (cargo.equals("3")) {//DESTINATARIO
+                    session.setLoggedin(true);
+                    Intent intent = new Intent(Login.this, DestinatarioBoxList.class);
+                    intent.putExtra("User", userL);
+                    intent.putExtra("Imei", IMEI);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
+            }
         }
-        else if(cargo.equals("2")){//TRANSPORTADOR
-
-            session.setLoggedin(true);
-            Intent intent = new Intent(Login.this, TransporterBoxList.class);
-            intent.putExtra("User",userL);
-            intent.putExtra("Imei",IMEI);
-            startActivity(intent);
-            finish();
-        }
-        else if(cargo.equals("3")){//DESTINATARIO
-            session.setLoggedin(true);
-            Intent intent = new Intent(Login.this, DestinatarioBoxList.class);
-            intent.putExtra("User",userL);
-            intent.putExtra("Imei",IMEI);
-            startActivity(intent);
-            finish();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
+        }catch(NullPointerException e){
+            Toast.makeText(getApplicationContext(), "No se recuperó información del servidor, contactar con soporte.", Toast.LENGTH_LONG).show();
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 

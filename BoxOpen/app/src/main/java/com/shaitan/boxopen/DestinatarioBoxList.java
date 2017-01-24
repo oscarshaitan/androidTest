@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -151,46 +152,55 @@ public class DestinatarioBoxList extends AppCompatActivity {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), "ERROR de conexción al intentar traer el listado de cajas, contactar con soporte", Toast.LENGTH_LONG).show();
         }
-        String completeJson = "{ "+'"'+"Boxes"+'"'+": "+incompleteJson+"}";
+        if(!incompleteJson.equals("No hay entregas activas en este momento.")){
+            String completeJson = "{ "+'"'+"Boxes"+'"'+": "+incompleteJson+"}";
 
+            try {
+                JSONObject jsonobject = new JSONObject(completeJson);
+                JSONArray jsonArray = jsonobject.getJSONArray("Boxes");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Double[] stopData= new Double[10];
+                    JSONObject explrObject = jsonArray.getJSONObject(i);
+                    stopData[0]= Double.valueOf(explrObject.getString("id_caja"));
+                    stopData[2]= Double.valueOf(explrObject.getString("latitud"));
+                    stopData[1]= Double.valueOf(explrObject.getString("longitud"));
+                    stopData[3]= Double.valueOf(explrObject.getString("Temperatura"));
+                    stopData[4]= Double.valueOf(explrObject.getString("Luz"));
+                    stopData[5]= Double.valueOf(explrObject.getString("Humedad"));
+                    stopData[6]= Double.valueOf(explrObject.getString("voltaje_bateria"));
+                    stopData[7]= Double.valueOf(explrObject.getString("porcentaje_bateria"));
+                    stopData[8]= Double.valueOf(explrObject.getString("estado_tapa"));
+                    stopData[9]= Double.valueOf(explrObject.getString("lock_status"));
 
-        try {
-            JSONObject jsonobject = new JSONObject(completeJson);
-            JSONArray jsonArray = jsonobject.getJSONArray("Boxes");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                Double[] stopData= new Double[10];
-                JSONObject explrObject = jsonArray.getJSONObject(i);
-                stopData[0]= Double.valueOf(explrObject.getString("id_caja"));
-                stopData[2]= Double.valueOf(explrObject.getString("latitud"));
-                stopData[1]= Double.valueOf(explrObject.getString("longitud"));
-                stopData[3]= Double.valueOf(explrObject.getString("Temperatura"));
-                stopData[4]= Double.valueOf(explrObject.getString("Luz"));
-                stopData[5]= Double.valueOf(explrObject.getString("Humedad"));
-                stopData[6]= Double.valueOf(explrObject.getString("voltaje_bateria"));
-                stopData[7]= Double.valueOf(explrObject.getString("porcentaje_bateria"));
-                stopData[8]= Double.valueOf(explrObject.getString("estado_tapa"));
-                stopData[9]= Double.valueOf(explrObject.getString("lock_status"));
-
-                stopListJson.add(stopData);
+                    stopListJson.add(stopData);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }catch (NullPointerException e){
+                Toast.makeText(getApplicationContext(), "ERROR al tratar de recuperar la información de las cajas, contactar con soporte", Toast.LENGTH_LONG).show();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            stopList.addAll(stopListJson);
+            boxsAvalible.clear();
+            for (int i = 0; i < stopList.size(); i++) {
+                String estado_tapa= "";
+                if(stopList.get(i)[8] == 0){
+                    estado_tapa="Cerrada";
+                }
+                if(stopList.get(i)[8] == 1){
+                    estado_tapa="Abierta";
+                }
+                boxsAvalible.add("Caja ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
+            }
+
+            prepareBoxList();
         }
-        stopList.addAll(stopListJson);
-        boxsAvalible.clear();
-        for (int i = 0; i < stopList.size(); i++) {
-            String estado_tapa= "";
-            if(stopList.get(i)[8] == 0){
-                estado_tapa="Cerrada";
-            }
-            if(stopList.get(i)[8] == 1){
-                estado_tapa="Abierta";
-            }
-            boxsAvalible.add("Caja ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
+        else{
+            Toast.makeText(getApplicationContext(), incompleteJson, Toast.LENGTH_LONG).show();
         }
 
-        prepareBoxList();
 
     }
 

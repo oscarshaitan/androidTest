@@ -65,33 +65,12 @@ public class Login extends AppCompatActivity{
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        //final TextView textView = (TextView) findViewById(R.id.atexto_return);//#
-
-                       /* try{
-                            textView.setText(response.body().string());//#
-                            Log.d("respuesta", response.body().string());
-                        }catch(NullPointerException e){
-                            Log.d("respuesta", "error: " +e);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
                         try{
-                           // textView.setText(response.body().string());
                             String json = response.body().string();
                             try {
                                 Log.d("Datos",json);
                                 JSONObject Object = new JSONObject(json);
-
                                 Log.d("Datos1", Object.toString());
-                               // String obj = "data";
-
-                                //JSONArray jarray =  Object.getJSONArray("data");
-                                //System.out.println(jarray.toString());
-
-                               // for(int i=0; i < jarray.length(); i++) {
-                               //      JSONObject jsonObject = jarray.getJSONObject(0);
-                               //     Log.d("Datos2", jsonObject.getString("status"));
-                               // }
                                 String NameR = Object.getString("Nombre");
                                 String EdadR = Object.getString("Edad");
                                 if(Object.getString("status").equals("success") ){

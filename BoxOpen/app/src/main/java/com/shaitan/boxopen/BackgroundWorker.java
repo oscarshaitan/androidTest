@@ -56,7 +56,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
         String getLlaveDestinatarioBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_destino";// FUNCIONANDO (21/12/16)
         String getLlaveTransportadorBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_transporte";//POR IMPLEMENTAR
         String sendTransportadorPos_url = "http://190.131.205.166/gssbox/index.php/main_android/update_transportador_pos";
-        String sendTerminarEntrega_url = "http://190.131.205.166/gssbox/index.php/main_android/terminar_entrega";
+        String sendTerminarEntrega_url = "http://190.131.205.166/gssbox/index.php/main_android/finalizar_entrega";
 
 
         //ADMIN URL
@@ -398,7 +398,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 outputStream.close();
             }
             if (type.equals("sendTerminarEntrega")) {
-               /* String idBox = params[2];
+                String idBox = params[2];
                 URL url = new URL(sendTerminarEntrega_url);
                 final HttpURLConnection connection = prepareConnection(url);
                 OutputStream outputStream = connection.getOutputStream();
@@ -423,17 +423,14 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 }
                 bufferedReader.close();
                 inputStream.close();
-                connection.disconnect();*/
-                String result = "POR IMPLEMENTAR";
+                connection.disconnect();
                 return result;
             }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("testing");
-            //Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
-           // e.printStackTrace();
+          e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {

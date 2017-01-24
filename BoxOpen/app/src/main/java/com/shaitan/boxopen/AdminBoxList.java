@@ -12,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import io.fabric.sdk.android.Fabric;
 
 public class AdminBoxList extends AppCompatActivity implements View.OnClickListener{
     private ListView boxMenu, menuList;
@@ -56,6 +60,7 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
         User = bundle.getString("User");
         IMEI = bundle.getString("Imei");
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_admin_box_list);
 
         session = new Session(this);
@@ -158,43 +163,53 @@ public class AdminBoxList extends AppCompatActivity implements View.OnClickListe
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        String completeJson = "{ "+'"'+"Boxes"+'"'+": "+incompleteJson+"}";
-
-
-        try {
-            JSONObject jsonobject = new JSONObject(completeJson);
-            JSONArray jsonArray = jsonobject.getJSONArray("Boxes");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                Double[] stopData= new Double[9];
-                JSONObject explrObject = jsonArray.getJSONObject(i);
-                stopData[0]= Double.valueOf(explrObject.getString("id_caja"));
-                stopData[2]= Double.valueOf(explrObject.getString("latitud"));
-                stopData[1]= Double.valueOf(explrObject.getString("longitud"));
-                stopData[3]= Double.valueOf(explrObject.getString("Temperatura"));
-                stopData[4]= Double.valueOf(explrObject.getString("Luz"));
-                stopData[5]= Double.valueOf(explrObject.getString("Humedad"));
-                stopData[6]= Double.valueOf(explrObject.getString("voltaje_bateria"));
-                stopData[7]= Double.valueOf(explrObject.getString("porcentaje_bateria"));
-                stopData[8]= Double.valueOf(explrObject.getString("estado_tapa"));
-
-                stopListJson.add(stopData);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), " ERROR de conexción con el servidor al intentar traer el listado de cajas, contactar con soporte", Toast.LENGTH_LONG).show();
         }
-        stopList.addAll(stopListJson);
-        boxsAvalible.clear();
-        for (int i = 0; i < stopList.size(); i++) {
-            String estado_tapa= "";
-            if(stopList.get(i)[8] == 0){
-                estado_tapa="Cerrada";
+
+        if(!incompleteJson.equals("No hay entregas activas en este momento.")){
+            String completeJson = "{ "+'"'+"Boxes"+'"'+": "+incompleteJson+"}";
+            try {
+                JSONObject jsonobject = new JSONObject(completeJson);
+                JSONArray jsonArray = jsonobject.getJSONArray("Boxes");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Double[] stopData= new Double[9];
+                    JSONObject explrObject = jsonArray.getJSONObject(i);
+                    stopData[0]= Double.valueOf(explrObject.getString("id_caja"));
+                    stopData[2]= Double.valueOf(explrObject.getString("latitud"));
+                    stopData[1]= Double.valueOf(explrObject.getString("longitud"));
+                    stopData[3]= Double.valueOf(explrObject.getString("Temperatura"));
+                    stopData[4]= Double.valueOf(explrObject.getString("Luz"));
+                    stopData[5]= Double.valueOf(explrObject.getString("Humedad"));
+                    stopData[6]= Double.valueOf(explrObject.getString("voltaje_bateria"));
+                    stopData[7]= Double.valueOf(explrObject.getString("porcentaje_bateria"));
+                    stopData[8]= Double.valueOf(explrObject.getString("estado_tapa"));
+                    stopListJson.add(stopData);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            if(stopList.get(i)[8] == 1){
-                estado_tapa="Abierta";
+            catch (NullPointerException e){
+                Toast.makeText(getApplicationContext(), "No se recuperó información del listado de cajas, contactar con soporte", Toast.LENGTH_LONG).show();
             }
-            boxsAvalible.add("Caja ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
+            stopList.addAll(stopListJson);
+            boxsAvalible.clear();
+            for (int i = 0; i < stopList.size(); i++) {
+                String estado_tapa= "";
+                if(stopList.get(i)[8] == 0){
+                    estado_tapa="Cerrada";
+                }
+                if(stopList.get(i)[8] == 1){
+                    estado_tapa="Abierta";
+                }
+                boxsAvalible.add("Caja ID: {" +stopList.get(i)[0].intValue()+ "} Temp: " +stopList.get(i)[3]+ " %Bateria: " +stopList.get(i)[7]+ " Tapa:  " +estado_tapa);
+            }
+            prepareBoxList();
         }
-        prepareBoxList();
+        else{
+            Toast.makeText(getApplicationContext(), incompleteJson, Toast.LENGTH_LONG).show();
+        }
+
     }
 
     public void prepareBoxList(){
