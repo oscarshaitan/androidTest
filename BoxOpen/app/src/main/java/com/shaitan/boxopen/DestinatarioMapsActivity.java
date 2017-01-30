@@ -1,5 +1,6 @@
 package com.shaitan.boxopen;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -51,15 +52,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 
 public class DestinatarioMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener, GoogleApiClient.ConnectionCallbacks{
 
-
     private GoogleMap mMap;
     TelephonyManager telephonyManager;
-
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private static final String TAG = "DestinatariaMapsActivity";
-
-
     private ToggleButton chapa;
     private boolean chapaFlag = false;
     private boolean firstload = true;
@@ -68,7 +65,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
     private ListView menuList;
     private TextView TVtemp, TVluz, TVhumedad, TVvoltaje, TVbateria, TVtapa, TVkey, TVsistema, Gpsfail;
     private List<Double[]> stopList = new ArrayList<>();
-
     private  String User, IMEI, IdBox, tipoApertura;
     private  Double latitud, longitud, temperatura, luz, humedad, voltajeBateria, porcentajeBateria,  estadoSistema, estadoTapa, proximidad;
     private boolean firstUpdate = true;
@@ -86,20 +82,17 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 .addConnectionCallbacks(this)
                 .addApi(LocationServices.API)
                 .build();
-
-        menuOptions.add("Actualziar Caja");
-        menuOptions.add("Mostrar/Ocultar Parada");
-        menuOptions.add("Ayuda");
-        menuOptions.add("Atras");
-        menuOptions.add("Logout");
-
+        menuOptions.add(getString(R.string.menuOptions_update));
+        menuOptions.add(getString(R.string.Show_hide_stop));
+        menuOptions.add(getString(R.string.help));
+        menuOptions.add(getString(R.string.back));
+        menuOptions.add(getString(R.string.logout));
         Bundle bundle = getIntent().getExtras();
         User = bundle.getString("User");
         IMEI = bundle.getString("Imei");
         IdBox = bundle.getString("IdBox");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinatario_maps);
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -107,7 +100,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         if(!session.loggedin()){
             logout();
         }
-
         btnMenu = (ImageButton) findViewById(R.id.menu);
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,9 +107,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 activateMenu();
             }
         });
-
-
-
         chapa = (ToggleButton)findViewById((R.id.chapa));
         activateChapa();
         chapa.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +124,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 }
             }
         });
-
         menuList =(ListView) findViewById(R.id.MenuList);
         TVtemp = (TextView)findViewById(R.id.temp);
         TVluz = (TextView)findViewById(R.id.luz);
@@ -162,7 +150,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -173,7 +160,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
@@ -183,8 +169,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
-
-
         mMap.clear();
         getABox(IdBox);
         if (tipoApertura.equals("Dos llaves")){
@@ -204,7 +188,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         estadoChapa(IdBox);
         scheduleSendLocation();
         getStopsBox(IdBox);
-
         final ArrayAdapter<String> adapterM = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menuOptions);
         menuList.setAdapter(adapterM);
         adapterM.notifyDataSetChanged();
@@ -239,6 +222,9 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         }catch (NullPointerException e){
             Toast.makeText(getApplicationContext(), "ERROR al intentar solicitar el valor de la llave Destinatario contactar con soporte", Toast.LENGTH_LONG).show();
         }
+        if(estadoLlave.equals("ERROR")){
+            Toast.makeText(this, "Hay un error de conexión, verificar su acceso a internet ", Toast.LENGTH_SHORT).show();
+        }
         if (estadoLlave.equals("1")) {
             chapa.setChecked(true);
             chapaFlag =true;
@@ -253,10 +239,8 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         int idBox= Integer.parseInt(IdBox);
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         String incompleteJson = null;
-
         try {
             incompleteJson = backgroundWorker.execute("GetBoxInfo",User, ""+idBox).get().toString();
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -264,71 +248,68 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         }catch (NullPointerException e){
             Toast.makeText(getApplicationContext(), "ERROR de conexción al tratar de recuperar la información de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
-        String completeJson = "{ "+'"'+"Box"+'"'+": "+incompleteJson+"}";
+        if(incompleteJson.equals("ERROR")){
+            Toast.makeText(this, "Hay un error de conexión, verificar su acceso a internet ", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            String completeJson = "{ " + '"' + "Box" + '"' + ": " + incompleteJson + "}";
 
-        try {
-            JSONObject jsonobject = new JSONObject(completeJson);
-            JSONArray jsonArray = jsonobject.getJSONArray("Box");
+            try {
+                JSONObject jsonobject = new JSONObject(completeJson);
+                JSONArray jsonArray = jsonobject.getJSONArray("Box");
+                JSONObject explrObject = jsonArray.getJSONObject(0);
+                latitud = Double.valueOf(explrObject.getString("latitud"));
+                longitud = Double.valueOf(explrObject.getString("longitud"));
+                temperatura = Double.valueOf(explrObject.getString("Temperatura"));
+                luz = Double.valueOf(explrObject.getString("Luz"));
+                humedad = Double.valueOf(explrObject.getString("Humedad"));
+                voltajeBateria = Double.valueOf(explrObject.getString("voltaje_bateria"));
+                porcentajeBateria = Double.valueOf(explrObject.getString("porcentaje_bateria"));
+                estadoSistema = Double.valueOf(explrObject.getString("lock_status"));
+                estadoTapa = Double.valueOf(explrObject.getString("estado_tapa"));
+                tipoApertura = explrObject.getString("tipo_apertura");
+                proximidad = Double.valueOf(explrObject.getString("proximidad"));
+                TVtemp.setText(" " + temperatura + "º");
+                TVluz.setText(" " + luz);
+                TVhumedad.setText("" + humedad + "%");
+                TVvoltaje.setText("" + voltajeBateria / 1000 + "V");
+                TVbateria.setText("" + porcentajeBateria + "%");
+                String estadoTapaS = "...";
+                if (estadoTapa == 0) {
+                    estadoTapaS = "Cerrada";
+                }
+                if (estadoTapa == 1) {
+                    estadoTapaS = "Abierta";
+                }
+                if (estadoTapa == -1) {
+                    estadoTapaS = "Error";
+                }
+                TVtapa.setText(estadoTapaS);
+                if (tipoApertura == "null") {
+                    tipoApertura = "No  asignado";
+                }
+                TVkey.setText("" + tipoApertura);
+                String estadoSistemaS = "...";
+                if (estadoSistema == 0) {
+                    estadoSistemaS = "Bloqueada";
+                }
+                if (estadoSistema == 1) {
+                    estadoSistemaS = "Liberada";
+                }
+                if (estadoSistema == -1) {
+                    estadoSistemaS = "Error";
+                }
+                TVsistema.setText(estadoSistemaS);
 
-
-            JSONObject explrObject = jsonArray.getJSONObject(0);
-            latitud = Double.valueOf(explrObject.getString("latitud"));
-            longitud = Double.valueOf(explrObject.getString("longitud"));
-            temperatura = Double.valueOf(explrObject.getString("Temperatura"));
-            luz = Double.valueOf(explrObject.getString("Luz"));
-            humedad = Double.valueOf(explrObject.getString("Humedad"));
-            voltajeBateria = Double.valueOf(explrObject.getString("voltaje_bateria"));
-            porcentajeBateria = Double.valueOf(explrObject.getString("porcentaje_bateria"));
-            estadoSistema = Double.valueOf(explrObject.getString("lock_status"));
-            estadoTapa = Double.valueOf(explrObject.getString("estado_tapa"));
-            tipoApertura = explrObject.getString("tipo_apertura");
-            proximidad = Double.valueOf(explrObject.getString("proximidad"));
-            TVtemp.setText(" "+temperatura+"º");
-            TVluz.setText(" "+luz);
-            TVhumedad.setText(""+humedad+"%");
-            TVvoltaje.setText(""+voltajeBateria/1000+"V");
-            TVbateria.setText(""+porcentajeBateria+"%");
-
-
-            String estadoTapaS = "...";
-            if(estadoTapa == 0){
-                estadoTapaS="Cerrada";
+                mMap.addMarker(new MarkerOptions()
+                        .title("Caja #" + (idBox + 1))
+                        .position(new LatLng(latitud, longitud)));
+                inActivateMenu();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                Toast.makeText(getApplicationContext(), "No se recuperó información de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
             }
-            if(estadoTapa == 1){
-                estadoTapaS="Abierta";
-            }
-            if(estadoTapa == -1){
-                estadoTapaS = "Error";
-            }
-
-            TVtapa.setText(estadoTapaS);
-
-            if(tipoApertura == "null"){
-                tipoApertura = "No  asignado";
-            }
-            TVkey.setText(""+tipoApertura);
-
-            String estadoSistemaS = "...";
-            if(estadoSistema == 0){
-                estadoSistemaS="Bloqueada";
-            }
-            if(estadoSistema == 1){
-                estadoSistemaS="Liberada";
-            }
-            if(estadoSistema == -1){
-                estadoSistemaS="Error";
-            }
-            TVsistema.setText(estadoSistemaS);
-
-            mMap.addMarker(new MarkerOptions()
-                    .title("Caja #"+ (idBox+1))
-                    .position(new LatLng(latitud, longitud)));
-            inActivateMenu();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }catch (NullPointerException e){
-            Toast.makeText(getApplicationContext(), "No se recuperó información de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -336,6 +317,8 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
     public void scheduleSendLocation() {
         handler.postDelayed(new Runnable() {
             public void run() {
+                checkConnection();
+                availableGPS();
                 refresMap();
                 getMyPos();
                 estadoChapa(IdBox);
@@ -439,7 +422,12 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
 
         try {
             String BoxStatus  = backgroundWorker.execute("sendOpenRequest",User,BoxID).get().toString();
-            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
+            if(BoxStatus.equals("ERROR")){
+                Toast.makeText(this, "Hay un error de conexión, verificar su acceso a internet ", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -468,7 +456,12 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
 
         try {
             String BoxStatus  = backgroundWorker.execute("sendCloseRequest",User,BoxID).get().toString();
-            Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
+            if(BoxStatus.equals("ERROR")){
+                Toast.makeText(this, "Hay un error de conexión, verificar su acceso a internet ", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), BoxStatus, Toast.LENGTH_LONG).show();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -491,36 +484,38 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         } catch (ExecutionException e) {
             e.printStackTrace();
         }catch (NullPointerException e){
-            Toast.makeText(getApplicationContext(), "ERROR de conexción al intentar traer el listado de las paradas de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.Error_box_list, Toast.LENGTH_LONG).show();
         }
-        String completeJson2 = "{ " + '"' + "Puntos" + '"' + ": " + incompleteJson2 + "}";
+        if(incompleteJson2.equals("ERROR")){
+            Toast.makeText(this, R.string.CNX_Error, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            String completeJson2 = "{ " + '"' + "Puntos" + '"' + ": " + incompleteJson2 + "}";
+            try {
+                JSONObject jsonobject2 = new JSONObject(completeJson2);
+                JSONArray jsonArray2 = jsonobject2.getJSONArray("Puntos");
+                for (int i = 0; i < jsonArray2.length(); i++) {
+                    Double[] stopData = new Double[3];
+                    JSONObject explrObject2 = jsonArray2.getJSONObject(i);
+                    stopData[0] = Double.valueOf(explrObject2.getString("id"));
 
-
-        try {
-            JSONObject jsonobject2 = new JSONObject(completeJson2);
-            JSONArray jsonArray2 = jsonobject2.getJSONArray("Puntos");
-
-            for (int i = 0; i < jsonArray2.length(); i++) {
-                Double[] stopData = new Double[3];
-                JSONObject explrObject2 = jsonArray2.getJSONObject(i);
-                stopData[0] = Double.valueOf(explrObject2.getString("id"));
-
-                stopData[1] = Double.valueOf(explrObject2.getString("latitud"));
-                stopData[2] = Double.valueOf(explrObject2.getString("longitud"));
-                stopListJson.add(stopData);
-                mMap.addMarker(new MarkerOptions()
-                        .title(explrObject2.getString("nombre"))
-                        .position(new LatLng(stopData[1], stopData[2]))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                circleStops = mMap.addCircle(new CircleOptions()
-                        .center(new LatLng(stopData[1], stopData[2]))
-                        .radius(15)
-                        .strokeColor(Color.RED));
+                    stopData[1] = Double.valueOf(explrObject2.getString("latitud"));
+                    stopData[2] = Double.valueOf(explrObject2.getString("longitud"));
+                    stopListJson.add(stopData);
+                    mMap.addMarker(new MarkerOptions()
+                            .title(explrObject2.getString("nombre"))
+                            .position(new LatLng(stopData[1], stopData[2]))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    circleStops = mMap.addCircle(new CircleOptions()
+                            .center(new LatLng(stopData[1], stopData[2]))
+                            .radius(15)
+                            .strokeColor(Color.RED));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                Toast.makeText(getApplicationContext(), R.string.Error_stop_list, Toast.LENGTH_LONG).show();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }catch (NullPointerException e){
-            Toast.makeText(getApplicationContext(), "No se recuperó información de las paradas de la caja, contactar con soporte", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -534,7 +529,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         startActivity(intent);
         finish();
     }
-
 
     public void getMyPos() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -557,19 +551,15 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
                 LastLocation = temLocation;
             }
             if (!tipoApertura.equals("Dos llaves")) {
-
                 double upDistance = 0;
                 LatLng updatePos = new LatLng(temLocation.getLatitude(), temLocation.getLongitude());
                 LatLng lastPos = new LatLng(LastLocation.getLatitude(), LastLocation.getLongitude());
                 upDistance = SphericalUtil.computeDistanceBetween(lastPos, updatePos);
-
                 Date TimeUpdate = new Date();
                 long mills = TimeUpdate.getTime() - lastTimeUpdate.getTime();
-
                 long diffSec = mills / 1000;
                 long min = diffSec / 60;
                 long sec = diffSec % 60;
-
                 if ((upDistance > 5.0 && sec >= 30) || (min >= 1 || firstUpdate)) {
                     firstUpdate = false;
                     try {
@@ -589,7 +579,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void checkDistances(Location location) throws ExecutionException, InterruptedException {
         LatLng mPos = new LatLng(location.getLatitude(), location.getLongitude());
-
         double boxDistance = 0;
         LatLng boxPos = new LatLng(latitud, longitud);
         boxDistance = SphericalUtil.computeDistanceBetween(mPos, boxPos);//usuario caja
@@ -597,7 +586,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         if (boxDistance <= 15) {
             boxDistanceF = true;
         }
-
         boolean stopDistance = false;
         for (int i = 0; i < stopListJson.size(); i++) {
             double distance = 0;
@@ -608,7 +596,6 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
             }
         }
         // si el transportador esta a 15mts de la caja y la parada segura esta dentro del radio de apertura de la caja
-
         if (boxDistanceF && stopDistance) {
             chapa.setEnabled(true);
             chapa.setClickable(true);
@@ -634,6 +621,7 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         getMyPos();
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection Suspended");
@@ -648,5 +636,35 @@ public class DestinatarioMapsActivity extends FragmentActivity implements OnMapR
         intent.putExtra("PrevActivity", "DestinatarioMapsActivity");
         startActivity(intent);
         finish();
+    }
+
+    public void checkConnection(){
+        String result= "";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        try {
+            result = backgroundWorker.execute("Test",User).get().toString();
+            if (result != "TRUE" && result == ""){
+                Toast.makeText(getApplicationContext(), R.string.CNX_Error, Toast.LENGTH_LONG).show();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }catch (NullPointerException e){
+            Toast.makeText(getApplicationContext(), R.string.CNX_Error, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public boolean availableGPS(){
+        //Check GPS available
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Gpsfail.setVisibility(View.VISIBLE);
+            return false;
+        }
+        else{
+            Gpsfail.setVisibility(View.INVISIBLE);
+            return true;
+        }
     }
 }

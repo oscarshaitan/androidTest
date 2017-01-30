@@ -27,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 public class Login extends AppCompatActivity implements View.OnClickListener{
 
-    private Button login, register;
-    private EditText pass,user,cargo;
+    private Button login;
+    private EditText pass,user;
     private crypth crypth = new crypth();
     private Session session;
     TelephonyManager telephonyManager;
@@ -42,11 +42,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         session = new Session(this);
         login = (Button)findViewById(R.id.buttonL);
-        register = (Button)findViewById(R.id.buttonR);
         user = (EditText)findViewById(R.id.userText);
         pass = (EditText)findViewById(R.id.passText);
         login.setOnClickListener(this);
-        register.setOnClickListener(this);
         telephonyManager = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -82,7 +80,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     private  void login() throws UnsupportedEncodingException, NoSuchAlgorithmException, ExecutionException, InterruptedException {
         String userL = user.getText().toString();
         String passL = pass.getText().toString();
-        String rolTemp = "";
         String cargo = "";
         String token = "TRUE";
         try {
@@ -102,16 +99,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             BackgroundWorker backgroundWorker = new BackgroundWorker(this);
 
             //rol = backgroundWorker.execute(userL, crypth.AES_Encrypt(IMEI, crypth.SHA1(crypth.MD5(passL))), "login").toString();
-            cargo = backgroundWorker.execute("login", userL, passL).get().toString();
+            String result = backgroundWorker.execute("login", userL, passL).get().toString();
+            cargo = result;
 
-
-            //para bd local
-            //rol =""+ db.getUser(userL,passL);
 
             //Check GPS available
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Toast.makeText(this, "Debe encender el GPS para usar la aplicación", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.GPS_Error, Toast.LENGTH_SHORT).show();
+            }
+            if(result.equals("ERROR")){
+                Toast.makeText(this, R.string.CNX_Error, Toast.LENGTH_SHORT).show();
             }
             else {
                 if (cargo.equals("1")) {//ADMIN
@@ -139,11 +137,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Información incorrecta", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.Login_error, Toast.LENGTH_SHORT).show();
             }
         }
         }catch(NullPointerException e){
-            Toast.makeText(getApplicationContext(), "No se recuperó información del servidor, contactar con soporte.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),  R.string.CNX_Error, Toast.LENGTH_LONG).show();
         }catch(Exception e){
             e.printStackTrace();
         }

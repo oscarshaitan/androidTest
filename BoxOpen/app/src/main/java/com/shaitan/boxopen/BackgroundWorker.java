@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
@@ -57,12 +58,14 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
         String getLlaveTransportadorBox_url = "http://190.131.205.166/gssbox/index.php/main_android/get_llave_transporte";//POR IMPLEMENTAR
         String sendTransportadorPos_url = "http://190.131.205.166/gssbox/index.php/main_android/update_transportador_pos";
         String sendTerminarEntrega_url = "http://190.131.205.166/gssbox/index.php/main_android/finalizar_entrega";
+        String Test_url = "http://190.131.205.166/gssbox/index.php/main_android/test";
 
 
         //ADMIN URL
         String AdminBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuario_cajas";// FUNCIONANDO (21/12/16)
         String adminOpenBoxs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/send_open_request";// FUNCIONANDO (21/12/16) falta verificar el tipo de apertura en php, // PARA CUANDO SE VUELVE A UNDIR RETORNA UN "ok"
         //String getOperatorrs_url = "http://190.131.205.166/gssbox/index.php/Admin_android/get_usuarios_operador";
+        String result = "";
         try {
             if (type.equals("login")) {
 
@@ -85,7 +88,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result= "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null){
                     result += line;
@@ -93,7 +96,6 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
             }
             if (type.equals("sendOpenRequest")) {
                 String idBox = params[2];
@@ -114,7 +116,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                     InputStream inputStream = connection.getInputStream();
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                    String result = "";
+
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         result += line;
@@ -122,7 +124,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                     bufferedReader.close();
                     inputStream.close();
                     connection.disconnect();
-                    return result;
+
             }
             if (type.equals("sendCloseRequest")) {
                 String idBox = params[2];
@@ -143,7 +145,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -151,7 +153,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("sendAdminOpenRequest")) {
                 String idBox = params[2];
@@ -171,7 +173,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -179,7 +181,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("getBoxes")) {
                 URL url = new URL(Boxs_url);
@@ -198,7 +200,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -206,7 +208,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("getBoxesEmpresa")) {
                 URL url = new URL(GetBoxInfoEmpresa_url);
@@ -225,7 +227,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -233,7 +235,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("adminGetBoxes")) {
 
@@ -252,7 +254,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -260,7 +262,6 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
             }
             if (type.equals("GetBoxInfo")) {
                 String idBox = params[2];
@@ -281,7 +282,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -289,7 +290,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("get_puntos")) {
                 String idBox = params[2];
@@ -310,7 +311,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -318,7 +319,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("llaveDestinatario")) {
                 String idBox = params[2];
@@ -339,7 +340,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result= "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null){
                     result += line;
@@ -347,7 +348,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("llaveTransportador")) {
                 String idBox = params[2];
@@ -368,7 +369,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result= "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null){
                     result += line;
@@ -376,7 +377,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
             }
             if (type.equals("sendTransporterLocation")) {
                 String latitud = params[2];
@@ -416,7 +417,7 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 InputStream inputStream = connection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
 
-                String result = "";
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     result += line;
@@ -424,20 +425,58 @@ public class BackgroundWorker extends AsyncTask <String,Void,String> {
                 bufferedReader.close();
                 inputStream.close();
                 connection.disconnect();
-                return result;
+
+            }
+            if (type.equals("Test")) {
+                URL url = new URL(Test_url);
+                final HttpURLConnection connection = prepareConnection(url);
+                OutputStream outputStream = connection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+                String post_data = URLEncoder.encode("token", "UTF-8") + "=" + URLEncoder.encode(TOKEN, "UTF-8");
+
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
+
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+                bufferedReader.close();
+                inputStream.close();
+                connection.disconnect();
+
             }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            result = "ERROR";
         } catch (IOException e) {
           e.printStackTrace();
+            result = "ERROR";
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            result = "ERROR";
         } catch (KeyManagementException e) {
             e.printStackTrace();
+            result = "ERROR";
         }
 
-        return null;
+
+        if(result != null && result != ""){
+            return result;
+        }
+        else if(result == null){
+            result = "ERROR";
+            return  result;
+        }
+        return result;
     }
 
 

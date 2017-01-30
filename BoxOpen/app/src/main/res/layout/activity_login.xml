@@ -13,23 +13,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/register"
-            android:id="@+id/buttonR"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:background="#f9f3a1"
-            android:textColor="@color/abc_primary_text_disable_only_material_light"
-            android:visibility="gone" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/gss"
             android:id="@+id/imageView"
-            android:layout_below="@+id/buttonR"
             android:layout_centerHorizontal="true" />
 
         <EditText
