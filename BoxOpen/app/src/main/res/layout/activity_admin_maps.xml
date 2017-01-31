@@ -40,7 +40,7 @@
 
 
     <Button
-        android:text="Terminar Entrega"
+        android:text="@string/end_delivery"
         android:layout_width="160dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -54,15 +54,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:visibility="gone" />
-    <ToggleButton
-        android:text="Chapa"
-        android:layout_width="160dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/chapa"
-        android:textOn="Solicitar cierre"
-        android:textOff="Abrir"
-        android:layout_alignParentStart="true" />
 
     <GridLayout
         android:layout_width="200dp"
@@ -228,7 +219,7 @@
     </GridLayout>
 
     <TextView
-        android:text="ADMINISTRADOR"
+        android:text="@string/Admin_ttl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
@@ -236,7 +227,7 @@
         android:layout_toEndOf="@+id/openBox" />
 
     <TextView
-        android:text="Buscando señal de GPS, Trate de ir al aire libre..."
+        android:text="@string/gps_problem"
         android:background="#000000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -247,5 +238,15 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:textAlignment="center" />
+
+    <ToggleButton
+        android:text="Chapa"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:id="@+id/chapa"
+        android:textOn="@string/action_close"
+        android:textOff="@string/action_open"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/openBox" />
 
 </RelativeLayout>

@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-    <resources>
+<resources>
     <string name="app_name">GSS BOX</string>
     <string name="user">User</string>
     <string name="password">Password</string>
